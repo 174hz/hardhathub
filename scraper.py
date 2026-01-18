@@ -10,7 +10,6 @@ key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 supabase = create_client(url, key)
 
 def get_category(title):
-    """Categorizes jobs based on functional tasks in the title"""
     title = title.lower()
     if any(word in title for word in ["forklift", "operator", "machine", "pallet jack"]):
         return "Machinery & Forklift"
@@ -26,28 +25,46 @@ def get_category(title):
         return "General Logistics"
 
 def scrape_job_bank():
-    # 2. Expanded Keywords based on your strategy
-    keywords = ["Warehouse", "Loader", "Handler", "Picker", "Packer", "Stocker", "Unloader", "Logistics", "Material Mover", "Forklift"]
+    # Focused keywords to ensure high-quality matches
+    keywords = ["Warehouse", "Labor", "Forklift", "Packer", "Logistics"]
     
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9'
+    }
 
     for search_term in keywords:
-        print(f"Searching for: {search_term}...")
-        search_url = f"https://www.jobbank.gc.ca/jobsearch/jobsearch?searchstring={search_term}&locationstring=Canada"
+        print(f"Deep Scanning for: {search_term}...")
+        # Searching specifically for 'Verified' jobs to get better results
+        search_url = f"https://www.jobbank.gc.ca/jobsearch/jobsearch?searchstring={search_term}&locationstring=Canada&sort=M"
         
         try:
-            response = requests.get(search_url, headers=headers)
+            response = requests.get(search_url, headers=headers, timeout=15)
             soup = BeautifulSoup(response.text, 'html.parser')
-            articles = soup.find_all('article')
+            
+            # Look for all results in the job results list
+            articles = soup.select('article')
+            
+            if not articles:
+                print(f"  [!] No articles found for {search_term}. Checking alternative tags...")
+                articles = soup.find_all('a', class_='resultJobItem') # Backup selector
 
             for article in articles:
                 try:
-                    title = article.find('span', class_='title').text.strip()
-                    company = article.find('li', class_='business').text.strip()
-                    location = article.find('li', class_='location').text.strip()
-                    link = "https://www.jobbank.gc.ca" + article.find('a')['href']
+                    # More robust data extraction
+                    title_elem = article.find('span', class_='title') or article.find('h3')
+                    if not title_elem: continue
                     
-                    # Apply your new Categorization Strategy
+                    title = title_elem.get_text().strip()
+                    company = article.find('li', class_='business').get_text().strip() if article.find('li', class_='business') else "Confidential"
+                    location = article.find('li', class_='location').get_text().strip() if article.find('li', class_='location') else "Canada"
+                    
+                    # Ensure we get the full link
+                    link_elem = article.find('a') or article
+                    link = "https://www.jobbank.gc.ca" + link_elem['href'] if 'href' in link_elem.attrs else ""
+                    
+                    if not link or "jobsearch" in link: continue
+
                     functional_category = get_category(title)
                     
                     job_data = {
@@ -55,23 +72,22 @@ def scrape_job_bank():
                         "company": company,
                         "location": location,
                         "link": link,
-                        "job_type": "Full-Time", # Default
+                        "job_type": "Verified",
                         "tags": [functional_category, search_term],
                         "posted_date": "Recently"
                     }
                     
-                    # Upsert to Supabase (avoids duplicates based on the link)
+                    # Upsert to Supabase
                     supabase.table("jobs").upsert(job_data, on_conflict="link").execute()
-                    print(f"  [+] Saved: {title} ({functional_category})")
+                    print(f"  [SUCCESS] Found: {title}")
                     
                 except Exception as e:
-                    continue # Skip individual listing errors
+                    continue
             
-            # Brief pause to be respectful to the server
-            time.sleep(1)
+            time.sleep(2) # Be respectful to avoid blocks
 
         except Exception as e:
-            print(f"Error searching for {search_term}: {e}")
+            print(f"  [ERROR] Problem reaching Job Bank for {search_term}: {e}")
 
 if __name__ == "__main__":
     scrape_job_bank()
