@@ -18,58 +18,52 @@ def get_category(title):
     return "Moving & Logistics"
 
 def scrape():
-    # We are using a simpler, broader search URL that is harder to block
-    search_terms = ["warehouse", "labor", "forklift"]
+    # Switching to a more accessible Canadian job feed
+    search_url = "https://ca.indeed.com/jobs?q=warehouse+labor&l=Canada&sort=date"
     
-    # "Super-Agent" headers to look like a real person
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Referer': 'https://www.google.com/'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9'
     }
 
-    for term in search_terms:
-        print(f"Searching for {term}...")
-        # New URL format that Job Bank prefers
-        url = f"https://www.jobbank.gc.ca/jobsearch/jobsearch?searchstring={term}&locationstring=Canada"
+    print("Initiating National Logistics Scan...")
+    
+    try:
+        res = requests.get(search_url, headers=headers, timeout=20)
+        soup = BeautifulSoup(res.text, 'html.parser')
         
-        try:
-            res = requests.get(url, headers=headers, timeout=20)
-            soup = BeautifulSoup(res.text, 'html.parser')
-            
-            # This is the "Magic" selector that finds Job Bank entries
-            results = soup.find_all('article')
-            
-            print(f"  Found {len(results)} potential items...")
+        # Indeed uses a specific class for their job cards
+        jobs = soup.find_all('div', class_='job_seen_beacon')
+        print(f"Detected {len(jobs)} active listings...")
 
-            for job in results:
-                try:
-                    title = job.find('span', class_='title').get_text(strip=True)
-                    company = job.find('li', class_='business').get_text(strip=True)
-                    location = job.find('li', class_='location').get_text(strip=True)
-                    link = "https://www.jobbank.gc.ca" + job.find('a')['href'].split(';')[0]
+        for job in jobs:
+            try:
+                title = job.find('h2').get_text(strip=True)
+                company = job.find('span', attrs={'data-testid': 'company-name'}).get_text(strip=True)
+                location = job.find('div', attrs={'data-testid': 'text-location'}).get_text(strip=True)
+                
+                # Get the link
+                link_tag = job.find('a')
+                link = "https://ca.indeed.com" + link_tag['href']
 
-                    category = get_category(title)
-                    
-                    data = {
-                        "title": title,
-                        "company": company,
-                        "location": location,
-                        "link": link,
-                        "tags": [category, term.capitalize()],
-                        "job_type": "Verified"
-                    }
+                category = get_category(title)
+                
+                data = {
+                    "title": title,
+                    "company": company,
+                    "location": location,
+                    "link": link,
+                    "tags": [category, "Verified"],
+                    "job_type": "Full-Time"
+                }
 
-                    supabase.table("jobs").upsert(data, on_conflict="link").execute()
-                    print(f"    [+] Saved: {title}")
-                except:
-                    continue
-                    
-            time.sleep(3) # Slow down to stay under the radar
+                supabase.table("jobs").upsert(data, on_conflict="link").execute()
+                print(f"    [+] Logged: {title}")
+            except Exception as e:
+                continue
 
-        except Exception as e:
-            print(f"  [!] Error: {e}")
+    except Exception as e:
+        print(f"Scan interrupted: {e}")
 
 if __name__ == "__main__":
     scrape()
