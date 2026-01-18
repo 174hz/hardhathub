@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HardHatHub | Canada's Manual Labor Job Board</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-50 font-sans">
+
+    <header class="bg-slate-900 text-white pb-10">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center text-slate-900 font-black text-xl">H</div>
+                <span class="text-2xl font-black tracking-tight uppercase">HardHatHub</span>
+            </div>
+            <div id="auth-buttons">
+                <button class="text-sm font-medium hover:text-yellow-400">Login</button>
+            </div>
+        </nav>
+
+        <div class="container mx-auto px-6 mt-12 text-center lg:text-left">
+            <h1 class="text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
+                Find Your Next <span class="text-yellow-400">Shift</span>. <br>
+                Build Your Future.
+            </div>
+            <p class="text-slate-400 text-lg mb-8">Tracking 1,000+ warehousing, factory, and logistics jobs across Canada.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 -mt-8">
+        <div id="job-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+    </main>
+
+    <script>
+        // Badge Logic for Job Types
+        function getBadge(type) {
+            const styles = {
+                'Full-Time': 'bg-green-100 text-green-800 border-green-200',
+                'Part-Time': 'bg-purple-100 text-purple-800 border-purple-200',
+                'Seasonal': 'bg-yellow-100 text-yellow-700 border-yellow-200'
+            };
+            return `<span class="px-2 py-1 rounded-md text-xs font-bold border ${styles[type] || 'bg-gray-100 text-gray-800'}">${type}</span>`;
+        }
+
+        // Sample Job Card Renderer
+        function createJobCard(job) {
+            return `
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200 hover:border-yellow-400 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        ${getBadge(job.job_type)}
+                        <span class="text-slate-400 text-xs font-medium">${job.posted_date}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-1">${job.title}</h3>
+                    <p class="text-slate-600 font-medium mb-4">${job.company} • ${job.location}</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        ${job.tags.map(tag => `<span class="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded uppercase font-bold">${tag}</span>`).join('')}
+                    </div>
+                    <a href="${job.link}" target="_blank" class="block w-full text-center bg-slate-900 text-white font-bold py-3 rounded-lg hover:bg-slate-800 transition-colors">Apply Now</a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
