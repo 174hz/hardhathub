@@ -18,33 +18,42 @@ def get_category(title):
     return "Moving & Logistics"
 
 def scrape():
-    # Switching to a more accessible Canadian job feed
-    search_url = "https://ca.indeed.com/jobs?q=warehouse+labor&l=Canada&sort=date"
+    # Searching Indeed Canada for manual labor roles
+    search_url = "https://ca.indeed.com/jobs?q=warehouse+laborer&l=Canada&sort=date"
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept-Language': 'en-US,en;q=0.9'
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://www.google.com/'
     }
 
-    print("Initiating National Logistics Scan...")
+    print("Initiating National Logistics Scan via Indeed...")
     
     try:
-        res = requests.get(search_url, headers=headers, timeout=20)
+        # We use a shorter timeout here to fail fast if blocked
+        res = requests.get(search_url, headers=headers, timeout=15)
         soup = BeautifulSoup(res.text, 'html.parser')
         
-        # Indeed uses a specific class for their job cards
+        # Indeed's job card selector
         jobs = soup.find_all('div', class_='job_seen_beacon')
         print(f"Detected {len(jobs)} active listings...")
 
         for job in jobs:
             try:
-                title = job.find('h2').get_text(strip=True)
-                company = job.find('span', attrs={'data-testid': 'company-name'}).get_text(strip=True)
-                location = job.find('div', attrs={'data-testid': 'text-location'}).get_text(strip=True)
+                title_node = job.find('h2')
+                if not title_node: continue
+                title = title_node.get_text(strip=True)
+
+                company_node = job.find('span', attrs={'data-testid': 'company-name'})
+                company = company_node.get_text(strip=True) if company_node else "Direct Hire"
+
+                location_node = job.find('div', attrs={'data-testid': 'text-location'})
+                location = location_node.get_text(strip=True) if location_node else "Canada"
                 
-                # Get the link
-                link_tag = job.find('a')
-                link = "https://ca.indeed.com" + link_tag['href']
+                link_node = job.find('a')
+                link = "https://ca.indeed.com" + link_node['href'] if link_node else ""
+
+                if not link: continue
 
                 category = get_category(title)
                 
@@ -57,6 +66,7 @@ def scrape():
                     "job_type": "Full-Time"
                 }
 
+                # Save to your database
                 supabase.table("jobs").upsert(data, on_conflict="link").execute()
                 print(f"    [+] Logged: {title}")
             except Exception as e:
