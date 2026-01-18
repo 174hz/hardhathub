@@ -3,65 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HardHatHub | Canada's Manual Labor Job Board</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>HardHatHub | Canadian Manual Labor Jobs</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; max-width: 850px; margin: 0 auto; padding: 20px; background-color: #f0f2f5; }
+        header { background: #2c3e50; color: white; padding: 2rem; border-radius: 10px; text-align: center; margin-bottom: 30px; }
+        h1 { margin: 0; font-size: 2.5rem; }
+        .job-card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 12px; border-left: 5px solid #e67e22; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .job-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+        .job-title { font-size: 1.4em; font-weight: bold; color: #2c3e50; text-decoration: none; display: block; margin-bottom: 5px; }
+        .company { color: #e67e22; font-weight: 600; font-size: 1.1em; }
+        .location { color: #7f8c8d; font-size: 0.95em; margin-bottom: 10px; }
+        .tag-container { margin-top: 10px; }
+        .tag { background: #ecf0f1; color: #34495e; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; margin-right: 8px; font-weight: 500; }
+        #job-container { min-height: 200px; }
+        .loading { text-align: center; color: #7f8c8d; font-style: italic; margin-top: 50px; }
+    </style>
 </head>
-<body class="bg-slate-50 font-sans">
+<body>
 
-    <header class="bg-slate-900 text-white pb-10">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center text-slate-900 font-black text-xl">H</div>
-                <span class="text-2xl font-black tracking-tight uppercase">HardHatHub</span>
-            </div>
-            <div id="auth-buttons">
-                <button class="text-sm font-medium hover:text-yellow-400">Login</button>
-            </div>
-        </nav>
-
-        <div class="container mx-auto px-6 mt-12 text-center lg:text-left">
-            <h1 class="text-4xl lg:text-6xl font-extrabold mb-4 leading-tight">
-                Find Your Next <span class="text-yellow-400">Shift</span>. <br>
-                Build Your Future.
-            </div>
-            <p class="text-slate-400 text-lg mb-8">Tracking 1,000+ warehousing, factory, and logistics jobs across Canada.</p>
-        </div>
+    <header>
+        <h1>HardHatHub</h1>
+        <p>Live Canadian Warehouse & Manual Labor Jobs</p>
     </header>
 
-    <main class="container mx-auto px-6 -mt-8">
-        <div id="job-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            </div>
-    </main>
+    <div id="job-container" class="loading">Locating the latest opportunities...</div>
 
     <script>
-        // Badge Logic for Job Types
-        function getBadge(type) {
-            const styles = {
-                'Full-Time': 'bg-green-100 text-green-800 border-green-200',
-                'Part-Time': 'bg-purple-100 text-purple-800 border-purple-200',
-                'Seasonal': 'bg-yellow-100 text-yellow-700 border-yellow-200'
-            };
-            return `<span class="px-2 py-1 rounded-md text-xs font-bold border ${styles[type] || 'bg-gray-100 text-gray-800'}">${type}</span>`;
+        // Your specific project credentials
+        const SUPABASE_URL = "https://oakwbsqdcljxckfmjyva.supabase.co"; 
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function fetchJobs() {
+            const { data: jobs, error } = await supabaseClient
+                .from('jobs')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            const container = document.getElementById('job-container');
+            
+            if (error) {
+                container.innerHTML = "<div class='loading'>Error connecting to database. Please check RLS settings.</div>";
+                console.error(error);
+                return;
+            }
+
+            if (!jobs || jobs.length === 0) {
+                container.innerHTML = "<div class='loading'>No jobs found. The scraper is currently searching Job Bank Canada...</div>";
+                return;
+            }
+
+            container.classList.remove('loading');
+            container.innerHTML = jobs.map(job => `
+                <div class="job-card">
+                    <a href="${job.link}" target="_blank" class="job-title">${job.title}</a>
+                    <div class="company">${job.company}</div>
+                    <div class="location">📍 ${job.location}</div>
+                    <div class="tag-container">
+                        ${job.tags ? job.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                        <span class="tag" style="background:#fff3e0; color:#e67e22;">Verified</span>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // Sample Job Card Renderer
-        function createJobCard(job) {
-            return `
-                <div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200 hover:border-yellow-400 transition-all">
-                    <div class="flex justify-between items-start mb-4">
-                        ${getBadge(job.job_type)}
-                        <span class="text-slate-400 text-xs font-medium">${job.posted_date}</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-1">${job.title}</h3>
-                    <p class="text-slate-600 font-medium mb-4">${job.company} • ${job.location}</p>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        ${job.tags.map(tag => `<span class="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded uppercase font-bold">${tag}</span>`).join('')}
-                    </div>
-                    <a href="${job.link}" target="_blank" class="block w-full text-center bg-slate-900 text-white font-bold py-3 rounded-lg hover:bg-slate-800 transition-colors">Apply Now</a>
-                </div>
-            `;
-        }
+        fetchJobs();
     </script>
 </body>
 </html>
