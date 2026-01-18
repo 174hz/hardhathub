@@ -2,13 +2,12 @@ name: Daily Job Scrape
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs every day at midnight
-  workflow_dispatch:   # This allows you to click a button to run it manually
+    - cron: '0 0 * * *' # Runs daily at midnight
+  workflow_dispatch:   # This line adds the manual "Run" button
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
