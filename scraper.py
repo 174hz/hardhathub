@@ -2,76 +2,54 @@ import requests
 from bs4 import BeautifulSoup
 import os
 from supabase import create_client
-from datetime import datetime, timedelta
 
 # Setup Supabase
 url = os.environ.get("SUPABASE_URL")
 key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 supabase = create_client(url, key)
 
-def auto_cleanup():
-    """Deletes job postings older than 14 days"""
-    threshold = (datetime.now() - timedelta(days=14)).isoformat()
-    try:
-        supabase.table("jobs").delete().lt("created_at", threshold).execute()
-        print(f">>> Auto-Cleanup: Removed expired listings older than {threshold}")
-    except Exception as e:
-        print(f"Cleanup Error: {e}")
-
-def get_category(title):
-    title = title.lower()
-    if any(word in title for word in ["forklift", "operator", "machine"]): return "Machinery & Forklift"
-    if any(word in title for word in ["picker", "packer", "order"]): return "Picking & Packing"
-    if any(word in title for word in ["loader", "unloader", "handler"]): return "Loading & Unloading"
-    if any(word in title for word in ["stock", "inventory", "receiving"]): return "Inventory & Stocking"
-    return "Moving & Logistics"
-
 def scrape():
-    # 1. Run Cleanup First
-    auto_cleanup()
-
-    print("Initiating Direct National Scan (No-Key Mode)...")
+    print(">>> STARTING FORCE SYNC <<<")
     search_url = "https://www.jobbank.gc.ca/jobsearch/jobsearch?searchstring=warehouse+laborer&locationstring=Canada&sort=M"
-    headers = {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'}
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'}
 
     try:
         response = requests.get(search_url, headers=headers, timeout=25)
         soup = BeautifulSoup(response.text, 'html.parser')
         articles = soup.find_all('article')
+        
+        print(f"Found {len(articles)} jobs on Job Bank.")
 
         for job in articles:
             try:
-                title_elem = job.find('span', class_='title')
-                if not title_elem: continue
-                title = title_elem.get_text(strip=True)
-
-                company_elem = job.find('li', class_='business')
-                company = company_elem.get_text(strip=True) if company_elem else "Direct Hire"
-
-                location_elem = job.find('li', class_='location')
-                location = location_elem.get_text(strip=True).replace('Location', '').strip() if location_elem else "Canada"
+                title = job.find('span', class_='title').get_text(strip=True)
+                # Cleaning the title of extra words
+                title = title.replace('Verified', '').strip()
                 
-                link_elem = job.find('a')
-                link = "https://www.jobbank.gc.ca" + link_elem['href'].split(';')[0]
+                company = job.find('li', class_='business').get_text(strip=True) if job.find('li', class_='business') else "Direct Hire"
+                location = job.find('li', class_='location').get_text(strip=True).replace('Location', '').strip()
+                link_suffix = job.find('a')['href'].split(';')[0]
+                link = "https://www.jobbank.gc.ca" + link_suffix
 
-                category = get_category(title)
-                
-                job_data = {
+                job_entry = {
                     "title": title,
                     "company": company,
                     "location": location,
                     "link": link,
-                    "tags": [category, "Verified"],
+                    "tags": ["Moving & Logistics", "Verified"], # Default tag for now
                     "job_type": "Full-Time"
                 }
 
-                supabase.table("jobs").upsert(job_data, on_conflict="link").execute()
-                print(f"    [+] Logged: {title}")
+                # Using insert instead of upsert for a cleaner test
+                res = supabase.table("jobs").insert(job_entry).execute()
+                print(f"    [+] Successfully Saved: {title}")
                 
-            except Exception: continue
+            except Exception as e:
+                print(f"    [!] Skip item: {e}")
+                continue
+                
     except Exception as e:
-        print(f"Scan failed: {e}")
+        print(f"CRITICAL ERROR: {e}")
 
 if __name__ == "__main__":
     scrape()
-      
