@@ -29,10 +29,10 @@
         <div class="mb-8">
             <h3 class="text-sm font-bold text-gray-500 uppercase mb-3 ml-1">Filter by Category</h3>
             <div class="flex flex-wrap gap-2" id="filter-bar">
-                <button onclick="filterJobs('all')" class="filter-btn active border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">All Jobs</button>
-                <button onclick="filterJobs('Machinery & Forklift')" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Machinery</button>
-                <button onclick="filterJobs('Picking & Packing')" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Packing</button>
-                <button onclick="filterJobs('Loading & Unloading')" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Loading</button>
+                <button onclick="filterJobs('all', event)" class="filter-btn active border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">All Jobs</button>
+                <button onclick="filterJobs('Machinery & Forklift', event)" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Machinery</button>
+                <button onclick="filterJobs('Picking & Packing', event)" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Packing</button>
+                <button onclick="filterJobs('Loading & Unloading', event)" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Loading</button>
             </div>
         </div>
 
@@ -45,14 +45,25 @@
     </main>
 
     <script>
-        // Replace these with your actual Supabase credentials
-        const SB_URL = "YOUR_SUPABASE_URL";
+        // --- CONFIGURATION ---
+        const RAW_URL = "YOUR_SUPABASE_URL"; 
         const SB_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+        // --- SANITIZER (Fixes the 'Invalid URL' error) ---
+        const SB_URL = RAW_URL.trim().replace(/\/$/, ""); 
+
+        let _supabase;
         let allJobs = [];
 
+        try {
+            _supabase = supabase.createClient(SB_URL, SB_KEY);
+            console.log("Supabase connected to:", SB_URL);
+        } catch (e) {
+            console.error("Critical Connection Error:", e.message);
+        }
+
         async function fetchJobs() {
+            if (!_supabase) return;
             try {
                 const { data, error } = await _supabase
                     .from('jobs')
@@ -61,13 +72,14 @@
 
                 if (error) throw error;
 
+                console.log("Data successfully loaded. Row count:", data.length);
                 allJobs = data;
                 renderJobs(data);
             } catch (err) {
                 console.error("Fetch error:", err);
                 document.getElementById('job-grid').innerHTML = `
                     <div class="bg-red-50 text-red-700 p-6 rounded-lg border border-red-200">
-                        <strong>Connection Error:</strong> We couldn't reach the database. Please refresh.
+                        <strong>Connection Error:</strong> ${err.message}. Please verify your Supabase URL and Key.
                     </div>`;
             }
         }
@@ -85,7 +97,7 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="text-[10px] font-black uppercase tracking-widest bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">
-                                ${job.tags ? job.tags[0] : 'Logistics'}
+                                ${job.tags ? job.tags[0] : 'General Logistics'}
                             </span>
                             <span class="text-[10px] text-gray-400 font-bold uppercase">${new Date(job.created_at).toLocaleDateString()}</span>
                         </div>
@@ -104,13 +116,11 @@
             `).join('');
         }
 
-        function filterJobs(category) {
-            // Update UI buttons
+        function filterJobs(category, event) {
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            event.currentTarget.classList.add('active');
 
-            // Filter data
             if (category === 'all') {
                 renderJobs(allJobs);
             } else {
@@ -119,6 +129,7 @@
             }
         }
 
+        // Initialize
         fetchJobs();
     </script>
 </body>
