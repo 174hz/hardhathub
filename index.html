@@ -8,7 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .filter-btn.active { background-color: #f59e0b; color: white; border-color: #f59e0b; }
-        .job-card:hover { border-color: #f59e0b; transform: translateY(-2px); }
+        .job-card:hover { border-color: #f59e0b; transform: translateY(-2px); transition: all 0.2s; }
+        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans">
@@ -16,7 +17,7 @@
     <nav class="bg-white border-b border-gray-200 py-4 sticky top-0 z-10 shadow-sm">
         <div class="max-w-5xl mx-auto px-4 flex justify-between items-center">
             <h1 class="text-2xl font-black tracking-tighter flex items-center">
-                👷 HARDHAT<span class="text-yellow-500">HUB</span>
+                <span class="mr-2">👷</span> HARDHAT<span class="text-yellow-500">HUB</span>
             </h1>
             <div class="hidden md:block text-xs font-bold text-gray-400 uppercase tracking-widest">
                 National Logistics Feed • Canada
@@ -30,41 +31,33 @@
             <h3 class="text-sm font-bold text-gray-500 uppercase mb-3 ml-1">Filter by Category</h3>
             <div class="flex flex-wrap gap-2" id="filter-bar">
                 <button onclick="filterJobs('all', event)" class="filter-btn active border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">All Jobs</button>
-                <button onclick="filterJobs('Machinery & Forklift', event)" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Machinery</button>
-                <button onclick="filterJobs('Picking & Packing', event)" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Packing</button>
-                <button onclick="filterJobs('Loading & Unloading', event)" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Loading</button>
+                <button onclick="filterJobs('manager', event)" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Management</button>
+                <button onclick="filterJobs('associate', event)" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Associates</button>
+                <button onclick="filterJobs('warehouse', event)" class="filter-btn border bg-white px-5 py-2 rounded-full text-sm font-bold transition-all shadow-sm">Warehouse General</button>
             </div>
         </div>
 
         <div id="job-grid" class="space-y-4">
             <div class="text-center py-20 bg-white rounded-xl border border-dashed border-gray-300">
                 <div class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-yellow-500 rounded-full mb-4"></div>
-                <p class="text-gray-500 font-medium">Syncing with National Job Bank...</p>
+                <p class="text-gray-500 font-medium">Connecting to National Database...</p>
             </div>
         </div>
     </main>
 
     <script>
-        // --- CONFIGURATION ---
+        // --- 1. CONFIGURATION (REPLACE THESE) ---
         const RAW_URL = "YOUR_SUPABASE_URL"; 
         const SB_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-        // --- SANITIZER (Fixes the 'Invalid URL' error) ---
+        // --- 2. INITIALIZATION ---
         const SB_URL = RAW_URL.trim().replace(/\/$/, ""); 
-
-        let _supabase;
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
         let allJobs = [];
 
-        try {
-            _supabase = supabase.createClient(SB_URL, SB_KEY);
-            console.log("Supabase connected to:", SB_URL);
-        } catch (e) {
-            console.error("Critical Connection Error:", e.message);
-        }
-
         async function fetchJobs() {
-            if (!_supabase) return;
             try {
+                console.log("Fetching jobs...");
                 const { data, error } = await _supabase
                     .from('jobs')
                     .select('*')
@@ -72,14 +65,15 @@
 
                 if (error) throw error;
 
-                console.log("Data successfully loaded. Row count:", data.length);
+                console.log("Fetched count:", data.length);
                 allJobs = data;
                 renderJobs(data);
             } catch (err) {
                 console.error("Fetch error:", err);
                 document.getElementById('job-grid').innerHTML = `
-                    <div class="bg-red-50 text-red-700 p-6 rounded-lg border border-red-200">
-                        <strong>Connection Error:</strong> ${err.message}. Please verify your Supabase URL and Key.
+                    <div class="bg-red-50 text-red-700 p-6 rounded-lg border border-red-200 text-center">
+                        <strong>Database Error:</strong> ${err.message}<br>
+                        <span class="text-sm">Please check your Supabase URL and Key configuration.</span>
                     </div>`;
             }
         }
@@ -87,49 +81,69 @@
         function renderJobs(jobs) {
             const grid = document.getElementById('job-grid');
             
-            if (jobs.length === 0) {
-                grid.innerHTML = `<div class="text-center py-20 text-gray-400">No jobs found in this category.</div>`;
+            if (!jobs || jobs.length === 0) {
+                grid.innerHTML = `<div class="text-center py-20 text-gray-400 font-bold">No active listings found.</div>`;
                 return;
             }
 
-            grid.innerHTML = jobs.map(job => `
-                <div class="job-card bg-white p-6 rounded-xl border border-gray-200 shadow-sm transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-[10px] font-black uppercase tracking-widest bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">
-                                ${job.tags ? job.tags[0] : 'General Logistics'}
-                            </span>
-                            <span class="text-[10px] text-gray-400 font-bold uppercase">${new Date(job.created_at).toLocaleDateString()}</span>
+            grid.innerHTML = jobs.map(job => {
+                // DATA MAPPING FIX:
+                // Based on your screenshot:
+                // 'title' contains "Newindeed.comwarehouse associate"
+                // 'company' contains the Date (January 13, 2026)
+                // 'location' contains the Company Name (Micco Warehousing)
+                
+                const cleanTitle = job.title
+                    .replace(/Newindeed\.com/gi, '')
+                    .replace(/indeed\.com/gi, '')
+                    .replace(/Talent\.com/gi, '')
+                    .replace(/,/g, ' ')
+                    .trim();
+
+                const companyName = job.location || "Logistics Partner";
+                const postedDate = job.company || "Recently";
+
+                return `
+                    <div class="job-card bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[10px] font-black uppercase tracking-widest bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">Verified</span>
+                                <span class="text-[10px] text-gray-400 font-bold uppercase">${postedDate}</span>
+                            </div>
+                            <h2 class="text-xl font-extrabold text-gray-900 leading-tight capitalize">${cleanTitle}</h2>
+                            <div class="mt-2 flex flex-wrap gap-y-1 gap-x-4 text-sm text-gray-600 font-medium">
+                                <span class="flex items-center">🏢 ${companyName}</span>
+                                <span class="flex items-center text-blue-600 font-bold">📍 Canada</span>
+                            </div>
                         </div>
-                        <h2 class="text-xl font-extrabold text-gray-900 leading-tight">${job.title}</h2>
-                        <div class="mt-2 flex flex-wrap gap-y-1 gap-x-4 text-sm text-gray-600 font-medium">
-                            <span class="flex items-center">🏢 ${job.company}</span>
-                            <span class="flex items-center text-blue-600">📍 ${job.location}</span>
+                        <div class="pt-4 md:pt-0 border-t md:border-t-0 border-gray-100">
+                            <a href="${job.link}" target="_blank" class="block w-full md:w-auto bg-gray-900 text-white text-center px-8 py-3 rounded-lg font-bold hover:bg-yellow-500 hover:text-black transition-all">
+                                View Posting
+                            </a>
                         </div>
                     </div>
-                    <div class="pt-4 md:pt-0 border-t md:border-t-0 border-gray-100">
-                        <a href="${job.link}" target="_blank" class="block w-full md:w-auto bg-gray-900 text-white text-center px-8 py-3 rounded-lg font-bold hover:bg-yellow-500 hover:text-black transition-all">
-                            Apply Now
-                        </a>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        function filterJobs(category, event) {
+        function filterJobs(keyword, event) {
+            // UI Toggle
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
 
-            if (category === 'all') {
+            // Filter logic
+            if (keyword === 'all') {
                 renderJobs(allJobs);
             } else {
-                const filtered = allJobs.filter(j => j.tags && j.tags.includes(category));
+                const filtered = allJobs.filter(j => 
+                    j.title.toLowerCase().includes(keyword.toLowerCase())
+                );
                 renderJobs(filtered);
             }
         }
 
-        // Initialize
+        // Run on load
         fetchJobs();
     </script>
 </body>
