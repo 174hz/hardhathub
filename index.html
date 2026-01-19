@@ -26,52 +26,53 @@
 
     <main class="max-w-5xl mx-auto px-4 py-8">
         
-        <div class="mb-10">
-            <h3 class="text-xs font-bold text-gray-400 uppercase mb-4 tracking-widest ml-1">Job Categories</h3>
-            <div class="flex flex-wrap gap-2" id="filter-bar">
-                <button onclick="filterJobs('all', event)" class="filter-btn active border bg-white px-6 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all">All Listings</button>
-                <button onclick="filterJobs('Management', event)" class="filter-btn border bg-white px-6 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all">Management</button>
-                <button onclick="filterJobs('Machinery & Forklift', event)" class="filter-btn border bg-white px-6 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all">Machinery</button>
-                <button onclick="filterJobs('Picking & Packing', event)" class="filter-btn border bg-white px-6 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all">Packing</button>
+        <div class="mb-10 space-y-6">
+            <div class="relative max-w-xl">
+                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Search by city or job title..." class="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none transition-all">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl opacity-30">🔍</span>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-bold text-gray-400 uppercase mb-4 tracking-widest ml-1">Categories</h3>
+                <div class="flex flex-wrap gap-2" id="filter-bar">
+                    <button onclick="filterJobs('all', event)" class="filter-btn active border bg-white px-6 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all">All Listings</button>
+                    <button onclick="filterJobs('Management', event)" class="filter-btn border bg-white px-6 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all">Management</button>
+                    <button onclick="filterJobs('Machinery & Forklift', event)" class="filter-btn border bg-white px-6 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all">Machinery</button>
+                    <button onclick="filterJobs('Picking & Packing', event)" class="filter-btn border bg-white px-6 py-2.5 rounded-full text-sm font-bold shadow-sm transition-all">Packing</button>
+                </div>
             </div>
         </div>
 
         <div id="job-grid" class="space-y-4">
             <div id="status-message" class="text-center py-20 bg-white rounded-2xl border border-gray-200 shadow-inner">
                 <div class="animate-spin inline-block w-8 h-8 border-4 border-yellow-500 border-t-transparent rounded-full mb-4"></div>
-                <p class="text-gray-500 font-bold tracking-tight">Syncing with National Database...</p>
+                <p class="text-gray-500 font-bold tracking-tight">Updating job listings...</p>
             </div>
         </div>
     </main>
 
     <script>
-        // --- 1. CONFIGURATION ---
         const SB_URL = "https://oakwbsqdcljxckfmjyva.supabase.co"; 
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
 
-        // --- 2. GLOBAL STATE ---
         let allJobs = [];
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        // --- 3. CORE FUNCTIONS ---
         async function fetchJobs() {
             try {
-                console.log("Fetching data from jobs table...");
                 const { data, error } = await _supabase
                     .from('jobs')
                     .select('created_at, title, company, location, link, tags, job_type')
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
-
                 allJobs = data || [];
                 renderJobs(allJobs);
             } catch (err) {
-                console.error("Critical Connection Error:", err.message);
+                console.error("Connection Error:", err.message);
                 document.getElementById('job-grid').innerHTML = `
-                    <div class="bg-red-50 p-10 rounded-2xl border-2 border-red-200 text-center">
-                        <h2 class="text-red-800 font-black text-xl mb-2">CONNECTION ERROR</h2>
-                        <p class="text-red-600 font-medium">${err.message}</p>
+                    <div class="text-center py-20 bg-white rounded-2xl border border-gray-100 text-gray-400 font-bold italic">
+                        The hub is currently undergoing maintenance. Please check back in a few minutes.
                     </div>`;
             }
         }
@@ -80,12 +81,16 @@
             const grid = document.getElementById('job-grid');
             
             if (!jobs || jobs.length === 0) {
-                grid.innerHTML = `<div class="text-center py-20 bg-white rounded-2xl border border-gray-100 text-gray-400 font-bold italic">Connected to Database, but no jobs were found. Run the scraper to fill the table!</div>`;
+                grid.innerHTML = `
+                    <div class="text-center py-20 bg-white rounded-2xl border border-gray-200 px-6">
+                        <div class="text-4xl mb-4">📍</div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">No active listings in this category</h3>
+                        <p class="text-gray-500 text-sm">New opportunities are posted daily. Please check back soon or try another category.</p>
+                    </div>`;
                 return;
             }
 
             grid.innerHTML = jobs.map(job => {
-                // Formatting Titles: Removing prefixes and long Job Bank strings
                 const cleanTitle = job.title
                     .replace(/indeed\.com|Talent\.com|New|On siteDirect ApplyPosted on Job BankThis job was posted directly by the employer on Job Bank\.Job Bank/gi, '')
                     .replace(/,/g, '')
@@ -100,12 +105,11 @@
                                 <span class="text-[10px] font-black uppercase tracking-widest bg-yellow-400 text-black px-2.5 py-1 rounded">
                                     ${category}
                                 </span>
-                                <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Canada Verified</span>
                             </div>
                             <h2 class="text-xl font-black text-gray-900 leading-tight capitalize mb-2">${cleanTitle}</h2>
                             <div class="flex flex-wrap gap-4 text-sm font-bold">
-                                <span class="text-gray-500">🏢 ${job.company || 'Logistics Partner'}</span>
-                                <span class="text-blue-600">📍 ${job.location || 'Canada'}</span>
+                                <span class="text-gray-500 uppercase tracking-tight">🏢 ${job.company || 'Direct Employer'}</span>
+                                <span class="text-blue-600 uppercase tracking-tight">📍 ${job.location || 'Canada'}</span>
                             </div>
                         </div>
                         <div>
@@ -113,17 +117,25 @@
                                 VIEW POSTING
                             </a>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allJobs.filter(job => 
+                job.title.toLowerCase().includes(query) || 
+                job.location.toLowerCase().includes(query) ||
+                job.company.toLowerCase().includes(query)
+            );
+            renderJobs(filtered);
         }
 
         function filterJobs(category, event) {
             if (!allJobs || allJobs.length === 0) return;
-
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             event.currentTarget.classList.add('active');
-
+            
             if (category === 'all') {
                 renderJobs(allJobs);
             } else {
@@ -132,7 +144,6 @@
             }
         }
 
-        // Initialize on load
         fetchJobs();
     </script>
 </body>
