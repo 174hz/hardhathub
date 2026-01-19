@@ -11,60 +11,65 @@
         :root { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         .title-straight { font-style: normal !important; letter-spacing: -0.04em; line-height: 0.95; }
-        .job-card { transition: all 0.3s ease; border: 1.5px solid #f1f5f9; background: white; }
+        .job-card { transition: all 0.3s ease; border: 1.5px solid #f1f5f9; background: white; cursor: pointer; }
         .job-card:hover { transform: translateY(-4px); border-color: #facc15; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05); }
-        .btn-yellow { background-color: #facc15; transition: all 0.2s ease; cursor: pointer; }
-        .btn-yellow:hover { background-color: #000; color: #fff; }
-        .input-field { width: 100%; padding: 1.25rem; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 1rem; font-weight: 800; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.1em; }
-        .input-field:focus { border-color: #facc15; outline: none; background: white; }
+        .footer-gradient { background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); }
+        .btn-yellow { background-color: #facc15; color: black; font-weight: 900; text-transform: uppercase; transition: all 0.2s; }
+        .btn-yellow:hover { background-color: black; color: white; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900 flex flex-col min-h-screen">
 
-    <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 py-4 sticky top-0 z-[100]">
+    <nav class="bg-white border-b border-slate-200 py-4 sticky top-0 z-[100]">
         <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-xl md:text-2xl font-black tracking-tighter cursor-pointer" onclick="window.location.reload()">
+            <h1 class="text-xl font-black tracking-tighter cursor-pointer" onclick="window.location.reload()">
                 <span class="bg-yellow-500 text-black px-2 py-0.5 rounded">HH</span>
                 <span class="uppercase">HARDHAT<span class="text-yellow-500">HUB</span></span>
             </h1>
-            
-            <div class="flex items-center gap-3 md:gap-6">
-                <button onclick="openWorkerPortal()" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-black transition-colors hidden md:block">Worker Access</button>
-                <button onclick="openBoostFlow()" class="bg-yellow-500 text-black px-5 py-2.5 rounded-xl font-extrabold text-xs shadow-lg uppercase tracking-tight hover:bg-black hover:text-white transition-all">Boost Listing — $49</button>
-            </div>
+            <button onclick="openBoostFlow()" class="bg-yellow-500 text-black px-5 py-2.5 rounded-xl font-extrabold text-xs shadow-lg uppercase tracking-tight hover:bg-black hover:text-white transition-all">Post Ad — $49</button>
         </div>
     </nav>
 
     <main class="flex-grow max-w-6xl mx-auto px-4 py-16 w-full">
-        <div class="mb-20">
-            <h2 class="text-6xl md:text-7xl font-extrabold uppercase title-straight mb-8">Logistics &<br><span class="text-yellow-500">Material Handling</span></h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12 border-t border-slate-100 pt-12">
-                <div><h4 class="font-black text-[10px] uppercase tracking-widest text-black mb-1">Material Handlers</h4><p class="text-[9px] font-bold text-slate-400 uppercase leading-relaxed italic italic">Movers & Storage</p></div>
-                <div><h4 class="font-black text-[10px] uppercase tracking-widest text-black mb-1">Warehouse Ops</h4><p class="text-[9px] font-bold text-slate-400 uppercase leading-relaxed italic italic">Staffing & Flow</p></div>
-                <div><h4 class="font-black text-[10px] uppercase tracking-widest text-black mb-1">PIT Operators</h4><p class="text-[9px] font-bold text-slate-400 uppercase leading-relaxed italic italic">Forklift & Reach</p></div>
-                <div><h4 class="font-black text-[10px] uppercase tracking-widest text-black mb-1">Fulfillment</h4><p class="text-[9px] font-bold text-slate-400 uppercase leading-relaxed italic italic">Order Picking</p></div>
-            </div>
-        </div>
-
-        <h3 class="text-2xl font-extrabold uppercase title-straight mb-8 border-b-4 border-yellow-500 inline-block">Live Feed</h3>
+        <h2 class="text-6xl md:text-7xl font-extrabold uppercase title-straight mb-12">Logistics<br><span class="text-yellow-500">Pipeline</span></h2>
         <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
-    <footer class="bg-white border-t border-slate-200 py-20 w-full mt-auto">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8">
-            <p class="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em]">© 2026 HARDHAT HUB — AN AGGREGATOR SERVICE</p>
-            <div class="flex gap-8">
-                <button onclick="openLegal('terms')" class="text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-black">Terms</button>
-                <button onclick="openLegal('privacy')" class="text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-black">Privacy</button>
+    <footer class="footer-gradient text-slate-300 py-20 border-t border-slate-800 mt-auto">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+                <div>
+                    <h4 class="text-white font-black uppercase text-xs tracking-widest mb-6">For Job Seekers</h4>
+                    <ul class="space-y-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                        <li><button onclick="openResource('howItWorks')" class="hover:text-yellow-500">How it works</button></li>
+                        <li><button onclick="openResource('careerAdvice')" class="hover:text-yellow-500">Career Advice</button></li>
+                        <li><button onclick="openResource('mission')" class="hover:text-yellow-500">Our Mission</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-black uppercase text-xs tracking-widest mb-6">For Employers</h4>
+                    <ul class="space-y-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                        <li><button onclick="openBoostFlow()" class="hover:text-yellow-500">Products & Pricing</button></li>
+                        <li><button onclick="openResource('bestPractices')" class="hover:text-yellow-500">Employer Resources</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-black uppercase text-xs tracking-widest mb-6">Legal & Choices</h4>
+                    <ul class="space-y-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                        <li><button onclick="openLegal('terms')" class="hover:text-yellow-500">Terms of Use</button></li>
+                        <li><button onclick="openLegal('privacy')" class="hover:text-yellow-500">Privacy Center</button></li>
+                        <li><button onclick="openLegal('security')" class="hover:text-yellow-500">Security Center</button></li>
+                    </ul>
+                </div>
             </div>
+            <p class="text-[9px] font-black text-slate-600 uppercase tracking-[0.4em] text-center border-t border-slate-800 pt-8">© 2026 HARDHAT HUB CANADA | INDUSTRIAL AGGREGATOR</p>
         </div>
     </footer>
 
-    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4" onclick="handleOverlayClick(event)">
-        <div id="modal-container" class="bg-white w-full max-w-xl rounded-[3rem] p-10 md:p-14 relative shadow-2xl">
-            <button onclick="closeModal()" class="absolute top-10 right-10 text-3xl text-slate-200 hover:text-black">&times;</button>
-            <div id="modal-content" class="max-h-[75vh] overflow-y-auto pr-2"></div>
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4" onclick="handleOverlayClick(event)">
+        <div id="modal-container" class="bg-white w-full max-w-xl rounded-[2.5rem] p-8 md:p-12 relative shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-6 right-8 text-3xl text-slate-300 hover:text-black">&times;</button>
+            <div id="modal-content" class="max-h-[70vh] overflow-y-auto pr-2"></div>
         </div>
     </div>
 
@@ -74,7 +79,7 @@
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
         let allJobs = [];
 
-        // TEXT CLEANING ENGINE
+        // --- 1. THE TEXT & LINK CLEANER ---
         function cleanText(text) {
             if (!text) return "";
             return text.replace(/indeed\.com/gi, " Indeed.com ")
@@ -82,6 +87,16 @@
                        .replace(/\s\s+/g, ' ').trim();
         }
 
+        function formatUrl(url) {
+            if (!url || url === "#") return null;
+            let cleanUrl = url.trim();
+            if (!/^https?:\/\//i.test(cleanUrl)) {
+                cleanUrl = 'https://' + cleanUrl;
+            }
+            return cleanUrl;
+        }
+
+        // --- 2. THE DATA ENGINE ---
         async function fetchJobs() {
             const { data } = await _supabase.from('jobs').select('*').order('created_at', { ascending: false });
             allJobs = data || [];
@@ -91,91 +106,74 @@
         function renderJobs(jobs) {
             const grid = document.getElementById('job-grid');
             grid.innerHTML = jobs.map((job, index) => `
-                <div class="job-card p-10 rounded-[2.5rem] flex flex-col justify-between">
+                <div onclick="openJobTeaser('${job.id || index}')" class="job-card p-10 rounded-[2.5rem] flex flex-col justify-between shadow-sm">
                     <div>
                         <h3 class="text-2xl font-extrabold uppercase title-straight mb-2 tracking-tight">${cleanText(job.title)}</h3>
                         <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest italic">${cleanText(job.company)}</p>
                     </div>
-                    <button onclick="openJobTeaser('${job.id || index}')" class="btn-yellow w-full py-5 mt-10 rounded-2xl text-black font-black uppercase tracking-widest text-[11px] shadow-sm">View Details</button>
+                    <div class="mt-8 flex items-center justify-between">
+                        <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">View Details</span>
+                        <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">→</div>
+                    </div>
                 </div>`).join('');
         }
 
-        // WORKER PORTAL / SIGN UP
-        function openWorkerPortal() {
-            document.getElementById('modal-content').innerHTML = `
-                <div class="text-center">
-                    <h2 class="text-4xl font-extrabold uppercase title-straight mb-4">Worker Pipeline</h2>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-10 italic">Get notified when new material handling roles drop</p>
-                    <form onsubmit="handleWorkerSignup(event)" class="space-y-4">
-                        <input type="text" placeholder="Full Name" class="input-field" required>
-                        <input type="email" placeholder="Email Address" class="input-field" required>
-                        <select class="input-field">
-                            <option>Material Handler</option>
-                            <option>PIT Operator (Forklift)</option>
-                            <option>Warehouse Lead</option>
-                            <option>General Labor</option>
-                        </select>
-                        <button type="submit" class="w-full bg-black text-white py-6 rounded-3xl font-black uppercase tracking-widest text-xs mt-6 hover:bg-yellow-500 hover:text-black transition-all">Join the Pipeline</button>
-                    </form>
-                </div>`;
-            document.getElementById('modal-overlay').classList.remove('hidden');
-        }
-
-        function handleWorkerSignup(e) {
-            e.preventDefault();
-            document.getElementById('modal-content').innerHTML = `
-                <div class="text-center py-10">
-                    <div class="text-5xl mb-6 text-green-500">✓</div>
-                    <h2 class="text-3xl font-black uppercase title-straight">You're in the Pipeline.</h2>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4">We'll alert you to new high-intent traffic in your sector.</p>
-                </div>`;
-        }
-
-        // BOOST FLOW & JOB TEASER (Restored Functions)
-        function openBoostFlow() {
-            document.getElementById('modal-content').innerHTML = `
-                <div class="text-center">
-                    <h2 class="text-4xl font-extrabold uppercase title-straight mb-4">Boost Listing</h2>
-                    <button onclick="showBoostForm(49)" class="w-full p-8 border-2 border-slate-100 rounded-3xl hover:border-yellow-400 text-left transition-all">
-                        <p class="text-xs font-black text-yellow-600 uppercase mb-1">Traffic Package</p>
-                        <p class="text-4xl font-black">$49</p>
-                    </button>
-                </div>`;
-            document.getElementById('modal-overlay').classList.remove('hidden');
-        }
-
-        function showBoostForm(price) {
-            document.getElementById('modal-content').innerHTML = `
-                <h2 class="text-3xl font-extrabold uppercase title-straight mb-8">Teaser Details</h2>
-                <form onsubmit="handleAdSubmit(event, ${price})" class="space-y-4">
-                    <input type="text" placeholder="Job Title" class="input-field" required>
-                    <input type="text" placeholder="Company Name" class="input-field" required>
-                    <input type="url" placeholder="Paste Destination URL" class="input-field" required>
-                    <button type="submit" class="w-full bg-black text-white py-6 rounded-3xl font-black uppercase tracking-widest text-xs mt-6">Checkout $${price}</button>
-                </form>`;
+        // --- 3. THE LINK EXECUTION (THE FIX) ---
+        function triggerExternalLink(url) {
+            const validUrl = formatUrl(url);
+            if (validUrl) {
+                window.open(validUrl, '_blank', 'noopener,noreferrer');
+            } else {
+                alert("This listing has expired or the link is temporarily unavailable.");
+            }
         }
 
         function openJobTeaser(id) {
             const job = allJobs.find(j => (j.id == id || allJobs.indexOf(j) == id));
             if (!job) return;
-            let link = job.apply_link || "#";
-            if (link !== "#" && !link.startsWith('http')) link = "https://" + link;
 
             document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-8">
+                <div class="space-y-6">
                     <h2 class="text-4xl font-extrabold uppercase title-straight leading-none">${cleanText(job.title)}</h2>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest italic">${cleanText(job.company)}</p>
-                    <div class="bg-slate-50 p-8 rounded-[2rem] font-bold uppercase text-[10px] text-slate-600 leading-loose">${job.description.split('\n').slice(0, 3).join('<br>')}...</div>
-                    <a href="${link}" target="_blank" class="block w-full text-center bg-black text-white py-6 rounded-3xl font-black shadow-2xl uppercase tracking-widest text-sm hover:bg-yellow-500 hover:text-black transition-all">Apply on Company Site ↗</a>
+                    <div class="bg-slate-50 p-6 rounded-3xl font-bold uppercase text-[10px] text-slate-500 leading-loose border border-slate-100">
+                        ${job.description ? job.description.split('\n').slice(0, 3).join('<br>') : 'No snippet available.'}...
+                    </div>
+                    <button onclick="triggerExternalLink('${job.apply_link}')" class="w-full bg-black text-white py-6 rounded-3xl font-black shadow-2xl uppercase tracking-widest text-sm hover:bg-yellow-500 hover:text-black transition-all">
+                        Apply on Company Site ↗
+                    </button>
+                    <p class="text-[8px] text-center font-bold text-slate-300 uppercase tracking-widest">You will be redirected to an external site</p>
                 </div>`;
             document.getElementById('modal-overlay').classList.remove('hidden');
         }
 
-        function handleAdSubmit(e) { e.preventDefault(); alert("Proceeding to Stripe..."); closeModal(); }
-        function openLegal(type) { alert("Opening " + type); }
+        // --- 4. MODAL LOGIC ---
+        function openResource(type) {
+            const content = {
+                careerAdvice: "Focus on PIT Certifications. Highlight safety records. Tailor skills for Material Handling roles.",
+                mission: "The high-velocity pipeline for Canada's industrial workforce.",
+                howItWorks: "We aggregate high-intent traffic and bridge it directly to employers.",
+                bestPractices: "Keep destination URLs direct and mobile-friendly."
+            };
+            document.getElementById('modal-content').innerHTML = `<h2 class="text-3xl font-black uppercase title-straight mb-6">${type}</h2><p class="text-[10px] font-bold uppercase text-slate-500 leading-relaxed">${content[type] || 'Content coming soon.'}</p>`;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+        }
+
+        function openLegal(type) {
+            document.getElementById('modal-content').innerHTML = `
+                <h2 class="text-2xl font-black uppercase mb-4">${type}</h2>
+                <div class="text-[9px] font-bold uppercase text-slate-400 leading-loose">
+                    This is a pure-play aggregator. HardHatHub takes NO responsibility for material impact or link safety. Use at your own risk.
+                </div>`;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+        }
+
+        function openBoostFlow() { openResource('pricing'); }
         function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
         function handleOverlayClick(e) { if (e.target.id === 'modal-overlay') closeModal(); }
         window.onload = fetchJobs;
     </script>
 </body>
 </html>
+
+  
