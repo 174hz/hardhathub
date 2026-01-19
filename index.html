@@ -14,11 +14,21 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
 
         .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .job-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .job-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .job-card:hover { transform: translateY(-5px); border-color: #eab308; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05); }
         
         .custom-scroll::-webkit-scrollbar { width: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        /* Smooth button transition */
+        .btn-yellow {
+            background-color: #facc15;
+            transition: all 0.2s ease;
+        }
+        .btn-yellow:hover {
+            background-color: #000000;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900">
@@ -71,12 +81,6 @@
                         <li><button onclick="openModal('terms')" class="hover:text-yellow-600">Terms</button></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 class="font-black text-[11px] uppercase tracking-[0.2em] mb-6 text-slate-400">Support</h4>
-                    <ul class="text-slate-600 text-xs space-y-4 font-bold uppercase tracking-wider">
-                        <li><a href="mailto:support@hardhathub.ca" class="hover:text-yellow-600">Contact Us</a></li>
-                    </ul>
-                </div>
             </div>
         </div>
     </footer>
@@ -97,46 +101,39 @@
 
         async function fetchJobs() {
             const { data, error } = await _supabase.from('jobs').select('*').order('created_at', { ascending: false });
-            if (error) {
-                console.error("Error fetching jobs:", error);
-                return;
-            }
+            if (error) { console.error(error); return; }
             allJobs = data || [];
             renderJobs(allJobs);
         }
 
         function renderJobs(jobs) {
             const grid = document.getElementById('job-grid');
-            if (jobs.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-20 font-bold text-slate-400 uppercase">No jobs found in this area.</div>`;
-                return;
-            }
-
             grid.innerHTML = jobs.map((job, index) => `
-                <div onclick="openJobDetails('${job.id || index}')" class="job-card bg-white p-8 rounded-[2.5rem] border border-slate-200/60 shadow-sm flex flex-col justify-between">
+                <div class="job-card bg-white p-8 rounded-[2.5rem] border border-slate-200/60 shadow-sm flex flex-col justify-between">
                     <div>
                         <div class="flex justify-between items-start mb-6">
                             <span class="bg-slate-900 text-white text-[9px] font-black px-2.5 py-1.5 rounded-lg uppercase tracking-widest">${(job.tags && job.tags[0]) || 'Warehouse'}</span>
                         </div>
                         <h3 class="text-xl font-black leading-tight mb-2 uppercase italic tracking-tighter">${job.title}</h3>
                         <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">🏢 ${job.company}</p>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mt-1">📍 ${job.location}</p>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mt-1 italic">📍 ${job.location}</p>
                     </div>
-                    <div class="flex justify-between items-center mt-8 pt-6 border-t border-slate-50">
-                        <span class="text-sm font-black text-yellow-600 italic tracking-tight">${job.pay || 'Verified Pay'}</span>
-                        <span class="text-[10px] font-black text-slate-900 uppercase tracking-widest bg-slate-50 px-3 py-2 rounded-xl">Details →</span>
+                    <div class="mt-8">
+                        <div class="flex justify-between items-center mb-4 px-1">
+                            <span class="text-sm font-black text-slate-900 italic tracking-tight">${job.pay || 'Verified Pay'}</span>
+                            <span class="text-[10px] font-bold text-slate-300 uppercase italic">Full-Time</span>
+                        </div>
+                        <button onclick="openJobDetails('${job.id || index}')" class="btn-yellow w-full py-4 rounded-2xl text-black font-black uppercase tracking-widest text-[11px] shadow-md active:scale-95 transition-all">
+                            View Details & Apply
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
         function openJobDetails(id) {
-            // Find job by ID, or by index if ID is missing
             const job = allJobs.find(j => (j.id == id || allJobs.indexOf(j) == id));
-            if (!job) {
-                console.error("Job not found for ID:", id);
-                return;
-            }
+            if (!job) return;
 
             document.getElementById('modal-content').innerHTML = `
                 <div class="space-y-8">
@@ -193,22 +190,13 @@
         }
 
         const modalContent = {
-            postjob: `
-                <div class="space-y-6">
-                    <h2 class="text-3xl font-black italic uppercase tracking-tighter">Post a Job</h2>
-                    <p class="text-slate-500 font-bold text-xs uppercase tracking-widest">Reach Verified Canadian Workers</p>
-                    <div class="space-y-4">
-                        <input type="text" placeholder="Job Title" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold">
-                        <input type="text" placeholder="Company Name" class="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl font-bold">
-                        <button onclick="alert('Checkout Redirecting...')" class="w-full bg-yellow-500 text-black py-6 rounded-3xl font-black uppercase tracking-widest">Continue to Checkout — $49</button>
-                    </div>
-                </div>`,
-            pricing: `<div class="p-8 text-center"><h2 class="text-3xl font-black italic uppercase tracking-tighter">Simple Pricing</h2><p class="text-slate-500 mt-4 font-bold">$49 Per Post • $99 Unlimited</p></div>`,
-            login: `<div class="p-8 text-center"><h2 class="text-3xl font-black italic uppercase tracking-tighter">Worker Login</h2><input type="email" placeholder="Email" class="w-full p-5 bg-slate-50 border rounded-2xl mt-4 font-bold"><button class="w-full bg-black text-white py-5 rounded-2xl mt-4 font-black">SIGN IN</button></div>`
+            postjob: `<div class="p-8"><h2 class="text-3xl font-black italic uppercase">Post a Job</h2><button onclick="alert('Proceeding...')" class="w-full bg-yellow-500 text-black py-6 rounded-3xl font-black uppercase mt-8">Post Now ($49)</button></div>`,
+            pricing: `<div class="p-8 text-center"><h2 class="text-3xl font-black italic uppercase">Pricing</h2><p class="mt-4 font-bold">$49 Single • $99 Unlimited</p></div>`,
+            login: `<div class="p-8 text-center"><h2 class="text-3xl font-black italic uppercase">Worker Login</h2><input type="email" placeholder="Email" class="w-full p-5 bg-slate-50 border rounded-2xl mt-4 font-bold"><button class="w-full bg-black text-white py-5 rounded-2xl mt-4 font-black uppercase tracking-widest">Sign In</button></div>`
         };
 
         function openModal(type) {
-            document.getElementById('modal-content').innerHTML = modalContent[type] || 'Content Loading...';
+            document.getElementById('modal-content').innerHTML = modalContent[type];
             document.getElementById('modal-overlay').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
@@ -218,21 +206,14 @@
             document.body.style.overflow = 'auto';
         }
 
-        function handleOverlayClick(e) {
-            if (e.target.id === 'modal-overlay') closeModal();
-        }
+        function handleOverlayClick(e) { if (e.target.id === 'modal-overlay') closeModal(); }
 
         function handleSearch() {
             const q = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allJobs.filter(j => 
-                j.title.toLowerCase().includes(q) || 
-                j.location.toLowerCase().includes(q) || 
-                j.company.toLowerCase().includes(q)
-            );
+            const filtered = allJobs.filter(j => j.title.toLowerCase().includes(q) || j.location.toLowerCase().includes(q) || j.company.toLowerCase().includes(q));
             renderJobs(filtered);
         }
 
-        // Initialize Feed
         window.onload = fetchJobs;
     </script>
 </body>
