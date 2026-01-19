@@ -1,16 +1,13 @@
 import requests
+from bs4 import BeautifulSoup
 import os
 from supabase import create_client
+import time
 
 # 1. Setup Supabase
 url = os.environ.get("SUPABASE_URL")
 key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 supabase = create_client(url, key)
-
-# 2. ADZUNA API CREDENTIALS
-# I have cleaned these to ensure no extra spaces exist
-ADZUNA_APP_ID = "767ae6dd"
-ADZUNA_APP_KEY = "70924a39e11a69130b6042d703ed2266"
 
 def get_category(title):
     title = title.lower()
@@ -21,46 +18,48 @@ def get_category(title):
     return "Moving & Logistics"
 
 def scrape():
-    print("Initiating Connection to Adzuna Canada...")
+    # Using Careerjet Canada - a very reliable source for manual labor
+    search_url = "https://www.careerjet.ca/search/jobs?s=warehouse+laborer&l=Canada&sort=date"
     
-    # We move the keys into a 'params' dictionary which requests handles safely
-    api_url = "https://api.adzuna.com/v1/api/jobs/ca/search/1"
-    
-    query_params = {
-        "app_id": ADZUNA_APP_ID.strip(),
-        "app_key": ADZUNA_APP_KEY.strip(),
-        "results_per_page": 50,
-        "what": "warehouse laborer",
-        "content-type": "application/json"
+    # Advanced headers to bypass bot detection
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Referer': 'https://www.google.com/'
     }
+
+    print("Initiating Stealth Scan for HardHatHub...")
     
     try:
-        # Performing the request with explicit parameters
-        response = requests.get(api_url, params=query_params, timeout=20)
+        session = requests.Session()
+        response = session.get(search_url, headers=headers, timeout=20)
         
-        if response.status_code == 401:
-            print("  [!] AUTH ERROR: Keys are still being rejected.")
-            print("  Tip: Check your email for a 'Verify Account' link from Adzuna.")
-            return
-            
         if response.status_code != 200:
-            print(f"  [!] Server Error: {response.status_code}")
+            print(f"  [!] Connection rejected: {response.status_code}")
             return
 
-        data = response.json()
-        jobs = data.get('results', [])
+        soup = BeautifulSoup(response.text, 'html.parser')
         
-        print(f"Successfully connected! Found {len(jobs)} jobs.")
+        # Careerjet job item selector
+        jobs = soup.select('.job')
+        print(f"Detected {len(jobs)} active listings on Careerjet...")
 
         for job in jobs:
             try:
-                # Clean up title
-                title = job.get('title', '').replace('<strong>', '').replace('</strong>', '').strip()
-                company = job.get('company', {}).get('display_name', 'Direct Hire')
-                location = job.get('location', {}).get('display_name', 'Canada')
-                link = job.get('redirect_url')
-
-                if not link: continue
+                title_link = job.select_one('header h2 a')
+                if not title_link: continue
+                
+                title = title_link.get_text(strip=True)
+                link = "https://www.careerjet.ca" + title_link['href']
+                
+                company = job.select_one('.company_location .company')
+                company = company.get_text(strip=True) if company else "Direct Hire"
+                
+                location = job.select_one('.company_location .locations')
+                location = location.get_text(strip=True) if location else "Canada"
 
                 category = get_category(title)
                 
@@ -73,6 +72,7 @@ def scrape():
                     "job_type": "Full-Time"
                 }
 
+                # Save to Supabase
                 supabase.table("jobs").upsert(job_data, on_conflict="link").execute()
                 print(f"    [+] Saved: {title}")
                 
@@ -80,7 +80,7 @@ def scrape():
                 continue
 
     except Exception as e:
-        print(f"Connection failed: {e}")
+        print(f"Scan failed: {e}")
 
 if __name__ == "__main__":
     scrape()
