@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -36,7 +36,7 @@
         </div>
 
         <div id="job-grid" class="space-y-4">
-            <div class="text-center py-20 bg-white rounded-2xl border border-gray-200 shadow-inner">
+            <div id="loading-spinner" class="text-center py-20 bg-white rounded-2xl border border-gray-200 shadow-inner">
                 <div class="animate-spin inline-block w-8 h-8 border-4 border-yellow-500 border-t-transparent rounded-full mb-4"></div>
                 <p class="text-gray-500 font-bold tracking-tight">Syncing with National Job Bank...</p>
             </div>
@@ -45,7 +45,6 @@
 
     <script>
         // --- 1. CONFIGURATION ---
-        // Ensure NO SPACES are inside the quotes below
         const SB_URL = "YOUR_SUPABASE_URL_HERE".trim().replace(/\/$/, ""); 
         const SB_KEY = "YOUR_SUPABASE_ANON_KEY_HERE".trim();
 
@@ -54,22 +53,28 @@
         let allJobs = [];
 
         async function fetchJobs() {
+            console.log("Attempting to connect to Supabase...");
             try {
                 const { data, error } = await _supabase
                     .from('jobs')
                     .select('*')
                     .order('created_at', { ascending: false });
 
-                if (error) throw error;
+                if (error) {
+                    console.error("Supabase Error Object:", error);
+                    throw error;
+                }
                 
+                console.log("Data received from DB:", data);
                 allJobs = data;
                 renderJobs(data);
             } catch (err) {
-                console.error("Connection Error:", err.message);
+                console.error("Full Connection Error:", err);
                 document.getElementById('job-grid').innerHTML = `
                     <div class="bg-red-50 text-red-800 p-8 rounded-2xl border border-red-100 text-center">
-                        <p class="font-bold text-lg mb-2">Connection Blocked</p>
-                        <p class="text-sm opacity-75">${err.message}</p>
+                        <p class="font-bold text-lg mb-2">Database Connection Failed</p>
+                        <p class="text-sm opacity-75">${err.message || 'Check Browser Console (F12) for details'}</p>
+                        <button onclick="location.reload()" class="mt-4 bg-red-800 text-white px-4 py-2 rounded text-xs font-bold">Retry Connection</button>
                     </div>`;
             }
         }
@@ -78,12 +83,12 @@
             const grid = document.getElementById('job-grid');
             
             if (!jobs || jobs.length === 0) {
-                grid.innerHTML = `<div class="text-center py-20 text-gray-400 font-bold">No jobs currently in database.</div>`;
+                grid.innerHTML = `<div class="text-center py-20 bg-white rounded-2xl border border-gray-100 text-gray-400 font-bold">The database is connected, but no jobs were found. Run the scraper!</div>`;
                 return;
             }
 
             grid.innerHTML = jobs.map(job => {
-                // CLEAN TITLES: Removes "indeed.com" and "On siteDirect..." strings
+                // Formatting Titles
                 const cleanTitle = job.title
                     .replace(/indeed\.com|Talent\.com|New|On siteDirect ApplyPosted on Job BankThis job was posted directly by the employer on Job Bank\.Job Bank/gi, '')
                     .replace(/,/g, '')
@@ -102,8 +107,8 @@
                             </div>
                             <h2 class="text-xl font-black text-gray-900 leading-tight capitalize mb-2">${cleanTitle}</h2>
                             <div class="flex flex-wrap gap-4 text-sm font-bold">
-                                <span class="text-gray-500">🏢 ${job.company}</span>
-                                <span class="text-blue-600">📍 ${job.location}</span>
+                                <span class="text-gray-500">🏢 ${job.company || 'Logistics Partner'}</span>
+                                <span class="text-blue-600">📍 ${job.location || 'Canada'}</span>
                             </div>
                         </div>
                         <div>
@@ -128,6 +133,7 @@
             }
         }
 
+        // Run on load
         fetchJobs();
     </script>
 </body>
