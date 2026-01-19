@@ -3,14 +3,14 @@ import os
 from supabase import create_client
 
 # 1. Setup Supabase
-# Using environment variables for Supabase as these are likely already set in GitHub
+# These use your existing GitHub Secrets for safety
 url = os.environ.get("SUPABASE_URL")
 key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 supabase = create_client(url, key)
 
-# 2. ADZUNA API CREDENTIALS (Hardcoded as requested)
-ADZUNA_APP_ID = "70924a39"
-ADZUNA_APP_KEY = "e11a69130b6042d703ed2266"
+# 2. ADZUNA API CREDENTIALS (Integrated)
+ADZUNA_APP_ID = "767ae6dd"
+ADZUNA_APP_KEY = "70924a39e11a69130b6042d703ed2266"
 
 def get_category(title):
     """Categorizes jobs based on functional tasks in the title"""
@@ -28,7 +28,8 @@ def get_category(title):
 def scrape():
     print("Initiating National Logistics Scan via Adzuna API...")
     
-    # Searching for 'warehouse laborer' in Canada ('ca')
+    # We are searching for 'warehouse' in Canada ('ca')
+    # Fetching 50 results to fill the board quickly
     api_url = f"https://api.adzuna.com/v1/api/jobs/ca/search/1?app_id={ADZUNA_APP_ID}&app_key={ADZUNA_APP_KEY}&results_per_page=50&what=warehouse%20laborer"
     
     try:
@@ -36,28 +37,29 @@ def scrape():
         
         if response.status_code != 200:
             print(f"  [!] API Error: Received status code {response.status_code}")
-            print(f"  [!] Response: {response.text}")
             return
 
         data = response.json()
         jobs = data.get('results', [])
         
-        print(f"Detected {len(jobs)} active listings...")
+        print(f"Detected {len(jobs)} live Canadian listings...")
 
         for job in jobs:
             try:
-                # Cleaning HTML tags often found in API titles
-                title = job.get('title', '').replace('<strong>', '').replace('</strong>', '').strip()
+                # API titles often contain <strong> tags; this removes them
+                raw_title = job.get('title', '')
+                clean_title = raw_title.replace('<strong>', '').replace('</strong>', '').strip()
+                
                 company = job.get('company', {}).get('display_name', 'Direct Hire')
                 location = job.get('location', {}).get('display_name', 'Canada')
                 link = job.get('redirect_url')
 
                 if not link: continue
 
-                category = get_category(title)
+                category = get_category(clean_title)
                 
                 job_entry = {
-                    "title": title,
+                    "title": clean_title,
                     "company": company,
                     "location": location,
                     "link": link,
@@ -65,9 +67,9 @@ def scrape():
                     "job_type": "Full-Time"
                 }
 
-                # Save to Supabase (upsert prevents duplicates based on link)
+                # Save to Supabase (upsert avoids duplicates)
                 supabase.table("jobs").upsert(job_entry, on_conflict="link").execute()
-                print(f"    [+] Logged: {title}")
+                print(f"    [+] Logged: {clean_title}")
                 
             except Exception as e:
                 continue
