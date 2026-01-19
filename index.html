@@ -7,19 +7,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         :root { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         .job-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1.5px solid #f1f5f9; }
         .job-card:hover { transform: translateY(-4px); border-color: #facc15; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05); }
+        .title-straight { font-style: normal !important; letter-spacing: -0.04em; line-height: 0.95; }
         .btn-yellow { background-color: #facc15; transition: all 0.2s ease; }
         .btn-yellow:hover { background-color: #000; color: #fff; transform: scale(1.02); }
-        
-        /* Legal Scroll Styling */
-        .legal-box { max-height: 400px; overflow-y: auto; padding-right: 15px; }
-        .legal-box::-webkit-scrollbar { width: 4px; }
-        .legal-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .input-field { width: 100%; padding: 1rem; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 1rem; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; transition: all 0.2s; }
+        .input-field:focus { border-color: #facc15; outline: none; background: white; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900 flex flex-col min-h-screen">
@@ -30,54 +28,19 @@
                 <span class="bg-yellow-500 text-black px-2 py-0.5 rounded">HH</span>
                 <span class="uppercase">HARDHAT<span class="text-yellow-500">HUB</span></span>
             </h1>
-            <div class="flex items-center gap-4">
-                <button onclick="openModal('pricing')" class="bg-yellow-500 text-black px-5 py-2.5 rounded-xl font-extrabold text-xs shadow-lg uppercase tracking-tight hover:bg-black hover:text-white transition-all">Boost Your Listing — $49</button>
-            </div>
+            <button onclick="openBoostFlow()" class="bg-yellow-500 text-black px-5 py-2.5 rounded-xl font-extrabold text-xs shadow-lg uppercase tracking-tight hover:bg-black hover:text-white transition-all">Boost Listing — $49</button>
         </div>
     </nav>
 
-    <main class="flex-grow max-w-6xl mx-auto px-4 py-12 w-full">
-        <div class="max-w-2xl">
-            <h2 class="text-5xl font-black italic uppercase tracking-tighter leading-none mb-4">The Industrial<br><span class="text-yellow-500">Pipeline</span></h2>
-            <p class="text-slate-500 font-bold uppercase text-xs tracking-widest italic">Driving high-intent traffic to Canada's top warehouse roles.</p>
-        </div>
-
-        <div class="mt-10 relative max-w-xl">
-            <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Search City, Company, or Role..." class="w-full pl-12 pr-4 py-5 rounded-3xl border border-slate-200 focus:ring-4 focus:ring-yellow-400/20 focus:border-yellow-400 outline-none transition-all font-bold shadow-sm">
-            <span class="absolute left-5 top-1/2 -translate-y-1/2 opacity-30 text-xl">🔍</span>
-        </div>
-
-        <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12"></div>
+    <main class="flex-grow max-w-6xl mx-auto px-4 py-16 w-full">
+        <h2 class="text-6xl md:text-7xl font-extrabold uppercase title-straight mb-16">The Industrial<br><span class="text-yellow-500">Pipeline</span></h2>
+        <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
-    <footer class="bg-white border-t border-slate-200 pt-16 pb-12 mt-20">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-                <div>
-                    <h1 class="text-xl font-black mb-4 uppercase tracking-tighter">HARDHAT<span class="text-yellow-500">HUB</span></h1>
-                    <p class="text-slate-400 font-bold text-[10px] uppercase tracking-widest leading-relaxed">The #1 High-Intent Traffic Channel for Canada's Logistics Workforce.</p>
-                </div>
-                <div class="md:col-span-2 flex flex-wrap gap-8 md:justify-end">
-                    <div>
-                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-4 text-slate-300">Compliance</h4>
-                        <ul class="text-slate-600 text-[11px] space-y-3 font-bold uppercase tracking-wider">
-                            <li><button onclick="openModal('terms')" class="hover:text-yellow-600">Terms of Use</button></li>
-                            <li><button onclick="openModal('privacy')" class="hover:text-yellow-600">Privacy Policy</button></li>
-                            <li><button onclick="openModal('security')" class="hover:text-yellow-600">Security Center</button></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="pt-8 border-t border-slate-100 flex justify-between items-center">
-                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">© 2026 HARDHAT HUB CANADA. AN AGGREGATOR SERVICE.</p>
-            </div>
-        </div>
-    </footer>
-
-    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4" onclick="handleOverlayClick(event)">
-        <div id="modal-container" class="bg-white w-full max-w-2xl rounded-[3rem] p-8 md:p-12 relative shadow-2xl border border-white/20">
-            <button onclick="closeModal()" class="absolute top-8 right-8 text-2xl text-slate-300 hover:text-black">&times;</button>
-            <div id="modal-content" class="max-h-[75vh] overflow-y-auto pr-2 custom-scroll"></div>
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4" onclick="handleOverlayClick(event)">
+        <div id="modal-container" class="bg-white w-full max-w-2xl rounded-[3rem] p-10 md:p-14 relative shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-10 right-10 text-3xl text-slate-300 hover:text-black transition-colors">&times;</button>
+            <div id="modal-content" class="max-h-[75vh] overflow-y-auto pr-4"></div>
         </div>
     </div>
 
@@ -96,94 +59,84 @@
         function renderJobs(jobs) {
             const grid = document.getElementById('job-grid');
             grid.innerHTML = jobs.map((job, index) => `
-                <div class="job-card bg-white p-8 rounded-[2.5rem] flex flex-col justify-between shadow-sm">
+                <div class="job-card bg-white p-10 rounded-[2.5rem] flex flex-col justify-between">
                     <div>
-                        <span class="bg-slate-100 text-slate-600 text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest">${(job.tags && job.tags[0]) || 'WAREHOUSE'}</span>
-                        <h3 class="text-xl font-black leading-tight mt-4 uppercase italic tracking-tighter mb-1">${job.title}</h3>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">🏢 ${job.company}</p>
+                        <h3 class="text-2xl font-extrabold uppercase title-straight mb-2 tracking-tight">${job.title}</h3>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1 italic">🏢 ${job.company}</p>
                     </div>
-                    <div class="mt-8">
-                        <p class="text-sm font-black text-slate-900 italic mb-4">📍 ${job.location}</p>
-                        <button onclick="openJobTeaser('${job.id || index}')" class="btn-yellow w-full py-4 rounded-2xl text-black font-black uppercase tracking-widest text-[11px] shadow-md">Quick View</button>
-                    </div>
-                </div>
-            `).join('');
+                    <button onclick="openJobTeaser('${job.id || index}')" class="btn-yellow w-full py-5 mt-10 rounded-2xl text-black font-black uppercase tracking-widest text-[11px]">View Details</button>
+                </div>`).join('');
         }
 
-        const legalContent = {
-            terms: `
-                <h2 class="text-3xl font-black italic uppercase mb-6 tracking-tighter">Terms of Use</h2>
-                <div class="legal-box text-xs font-semibold text-slate-600 leading-relaxed uppercase tracking-tight">
-                    <p class="mb-4 text-black">LAST UPDATED: JANUARY 2026</p>
-                    <p class="mb-4 italic">BY ACCESSING HARDHATHUB.CA, YOU AGREE TO BE BOUND BY THE FOLLOWING TERMS. IF YOU DO NOT AGREE, DISCONTINUE USE IMMEDIATELY.</p>
-                    <h4 class="text-black font-black mb-2 mt-4">1. SCOPE OF SERVICE</h4>
-                    <p class="mb-4">HARDHATHUB IS A PURE-PLAY AGGREGATOR. WE DO NOT EMPLOY WORKERS, FACILITATE APPLICATIONS, OR VET THE LEGITIMACY OF EXTERNAL JOB POSTINGS. WE PROVIDE HIGH-INTENT TRAFFIC ROUTING TO THIRD-PARTY SITES.</p>
-                    <h4 class="text-black font-black mb-2 mt-4">2. EXTERNAL LINKS & LIABILITY</h4>
-                    <p class="mb-4">THIS SITE CONTAINS LINKS TO EXTERNAL WEBSITES. HARDHATHUB EXERCISES NO CONTROL OVER THE CONTENT, PRIVACY POLICIES, OR PRACTICES OF THIRD-PARTY EMPLOYERS. WE EXPRESSLY DISCLAIM ALL LIABILITY FOR ANY LOSS OR DAMAGE INCURRED THROUGH THE USE OF EXTERNAL LINKS.</p>
-                    <h4 class="text-black font-black mb-2 mt-4">3. USER CONDUCT</h4>
-                    <p class="mb-4">USERS AGREE NOT TO SCRAPE, CRAWL, OR HARVEST DATA FROM THIS PORTAL WITHOUT EXPRESS WRITTEN PERMISSION. UNAUTHORIZED USE OF THE HARDHATHUB TRADEMARK IS STRICTLY PROHIBITED.</p>
-                    <h4 class="text-black font-black mb-2 mt-4">4. NO WARRANTY</h4>
-                    <p class="mb-4">SERVICES ARE PROVIDED "AS IS." WE DO NOT WARRANT THAT JOB LISTINGS ARE ACCURATE, COMPLETE, OR CURRENT. WE ARE NOT RESPONSIBLE FOR THE HIRING DECISIONS OF THIRD-PARTY EMPLOYERS.</p>
-                </div>`,
-            privacy: `
-                <h2 class="text-3xl font-black italic uppercase mb-6 tracking-tighter">Privacy Policy</h2>
-                <div class="legal-box text-xs font-semibold text-slate-600 leading-relaxed uppercase tracking-tight">
-                    <p class="mb-4 text-black">PRIVACY COMPLIANCE: PIPEDA & PIPA</p>
-                    <h4 class="text-black font-black mb-2 mt-4">1. DATA COLLECTION</h4>
-                    <p class="mb-4">HARDHATHUB DOES NOT COLLECT, STORE, OR PROCESS PERSONAL RESUMES OR APPLICATION DATA. WE COLLECT ANONYMIZED TRAFFIC ANALYTICS TO IMPROVE SERVICE DELIVERY.</p>
-                    <h4 class="text-black font-black mb-2 mt-4">2. COOKIES & TRACKING</h4>
-                    <p class="mb-4">WE USE ESSENTIAL COOKIES TO MAINTAIN SITE PERFORMANCE. THIRD-PARTY PARTNERS (SUCH AS STRIPE OR SUPABASE) MAY COLLECT ANONYMIZED DATA IN ACCORDANCE WITH THEIR OWN PRIVACY PROTOCOLS.</p>
-                    <h4 class="text-black font-black mb-2 mt-4">3. THIRD-PARTY DISCLOSURE</h4>
-                    <p class="mb-4">SINCE WE DO NOT COLLECT PERSONAL IDENTIFIABLE INFORMATION (PII) FROM WORKERS, WE DO NOT SELL OR RENT USER DATA. YOUR INTERACTION WITH EXTERNAL EMPLOYER LINKS IS GOVERNED BY THEIR RESPECTIVE PRIVACY POLICIES.</p>
-                </div>`,
-            security: `
-                <h2 class="text-3xl font-black italic uppercase mb-6 tracking-tighter">Security Center</h2>
-                <div class="legal-box text-xs font-semibold text-slate-600 leading-relaxed uppercase tracking-tight">
-                    <h4 class="text-black font-black mb-2 mt-4">1. SECURE ROUTING</h4>
-                    <p class="mb-4">ALL TRAFFIC ON HARDHATHUB IS ENCRYPTED VIA SSL/TLS PROTOCOLS. WE ENSURE THAT ALL REDIRECTS TO EMPLOYER SITES ARE CONDUCTED OVER SECURE CONNECTIONS.</p>
-                    <h4 class="text-black font-black mb-2 mt-4">2. PAYMENT SECURITY</h4>
-                    <p class="mb-4">EMPLOYER PAYMENTS FOR BOOSTED LISTINGS ARE PROCESSED EXCLUSIVELY BY STRIPE. HARDHATHUB NEVER STORES CREDIT CARD NUMBERS OR SENSITIVE BILLING DATA ON ITS OWN SERVERS.</p>
-                    <h4 class="text-black font-black mb-2 mt-4">3. REPORTING FRAUD</h4>
-                    <p class="mb-4">IF YOU ENCOUNTER A SUSPICIOUS EXTERNAL LINK OR A FRAUDULENT JOB POSTING, PLEASE NOTIFY SECURITY@HARDHATHUB.CA IMMEDIATELY FOR REMOVAL.</p>
-                </div>`
-        };
-
-        function openModal(type) {
-            const content = legalContent[type];
-            if (content) {
-                document.getElementById('modal-content').innerHTML = content;
-            } else if (type === 'pricing') {
-                document.getElementById('modal-content').innerHTML = `<h2 class="text-3xl font-black italic uppercase mb-6">Boost Your Ad</h2><button class="w-full bg-yellow-500 p-6 rounded-2xl font-black uppercase shadow-xl">Post Now — $49</button>`;
-            }
-            document.getElementById('modal-overlay').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function openJobTeaser(id) {
-            const job = allJobs.find(j => (j.id == id || allJobs.indexOf(j) == id));
-            if (!job) return;
+        // --- BOOST / POSTING FLOW ---
+        function openBoostFlow() {
             document.getElementById('modal-content').innerHTML = `
-                <div class="space-y-6">
-                    <h2 class="text-4xl font-black italic uppercase tracking-tighter leading-none">${job.title}</h2>
-                    <p class="text-md font-bold text-slate-400 uppercase">${job.company} — ${job.location}</p>
-                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 text-sm font-extrabold uppercase text-slate-600">
-                        ${job.description.split('\n').slice(0, 3).join('<br>')}...
+                <div class="text-center">
+                    <h2 class="text-4xl font-extrabold uppercase title-straight mb-2">Boost Listing</h2>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-10 italic text-center">Drive traffic to your existing job ad</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                        <button onclick="showAdForm(49)" class="p-8 border-2 border-slate-100 rounded-[2rem] hover:border-yellow-400 transition-all text-left group">
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-yellow-600">Standard</span>
+                            <p class="text-3xl font-black mt-1">$49</p>
+                            <p class="text-[10px] font-bold text-slate-500 mt-4 uppercase">30-Day High-Intent Traffic</p>
+                        </button>
+                        <button onclick="showAdForm(99)" class="p-8 border-2 border-yellow-200 bg-yellow-50 rounded-[2rem] hover:border-black transition-all text-left group relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-black text-white px-4 py-1 text-[8px] font-black uppercase">Popular</div>
+                            <span class="text-[10px] font-black text-yellow-700 uppercase tracking-widest">Enterprise</span>
+                            <p class="text-3xl font-black mt-1">$99</p>
+                            <p class="text-[10px] font-bold text-slate-500 mt-4 uppercase">Unlimited 30-Day Postings</p>
+                        </button>
                     </div>
-                    <a href="${job.apply_link || '#'}" target="_blank" class="block w-full text-center bg-black text-white py-6 rounded-3xl font-black shadow-2xl uppercase tracking-widest text-sm hover:bg-yellow-500 hover:text-black transition-all">View Full Post ↗</a>
                 </div>`;
             document.getElementById('modal-overlay').classList.remove('hidden');
         }
 
+        function showAdForm(price) {
+            document.getElementById('modal-content').innerHTML = `
+                <div class="max-w-md mx-auto">
+                    <h2 class="text-3xl font-extrabold uppercase title-straight mb-8 text-center">Ad Teaser Details</h2>
+                    <form onsubmit="handleCheckout(event, ${price})" class="space-y-4">
+                        <div>
+                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">Job Title</label>
+                            <input type="text" required placeholder="e.g. Warehouse General Associate" class="input-field">
+                        </div>
+                        <div>
+                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">Company Name</label>
+                            <input type="text" required placeholder="e.g. ABC Logistics Canada" class="input-field">
+                        </div>
+                        <div>
+                            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">Destination URL (Where to apply?)</label>
+                            <input type="url" required placeholder="https://indeed.com/your-job-link" class="input-field">
+                        </div>
+                        <div class="pt-6">
+                            <button type="submit" class="w-full bg-black text-white py-6 rounded-3xl font-black uppercase tracking-widest text-sm hover:bg-yellow-500 hover:text-black transition-all shadow-2xl">
+                                Proceed to Payment — $${price}
+                            </button>
+                        </div>
+                    </form>
+                </div>`;
+        }
+
+        function handleCheckout(e, price) {
+            e.preventDefault();
+            document.getElementById('modal-content').innerHTML = `
+                <div class="text-center py-10">
+                    <div class="animate-spin text-4xl mb-6">⚙️</div>
+                    <h2 class="text-2xl font-black uppercase title-straight">Redirecting to Stripe...</h2>
+                    <p class="text-xs font-bold text-slate-400 mt-4 uppercase tracking-widest">Securing your $${price} transaction</p>
+                </div>`;
+            
+            // In a real app, this is where you'd call your Stripe API
+            setTimeout(() => {
+                alert("Redirecting to Secure Checkout...");
+                closeModal();
+            }, 1500);
+        }
+
         function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); document.body.style.overflow = 'auto';}
         function handleOverlayClick(e) { if (e.target.id === 'modal-overlay') closeModal(); }
-        function handleSearch() {
-            const q = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allJobs.filter(j => j.title.toLowerCase().includes(q) || j.location.toLowerCase().includes(q));
-            renderJobs(filtered);
-        }
         window.onload = fetchJobs;
     </script>
 </body>
 </html>
-
-      
