@@ -15,6 +15,7 @@
         .legal-scroll { max-height: 50vh; overflow-y: auto; padding-right: 10px; }
         .legal-scroll::-webkit-scrollbar { width: 4px; }
         .legal-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .success-bg { background: radial-gradient(circle at top right, #fefce8, #ffffff); }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900">
@@ -51,11 +52,11 @@
     <main class="max-w-6xl mx-auto px-4 py-12">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
             <div>
-                <h2 class="text-3xl font-black tracking-tight uppercase italic">Live Feed</h2>
-                <p class="text-slate-400 font-medium italic">Verified Canadian warehouse roles.</p>
+                <h2 class="text-3xl font-black tracking-tight uppercase italic underline decoration-yellow-400">Live Feed</h2>
+                <p class="text-slate-400 font-medium">Verified Logistics Opportunities Canada.</p>
             </div>
             <div class="relative w-full md:w-72">
-                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Search city or title..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-yellow-400 outline-none transition-all">
+                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="City or job title..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-yellow-400 outline-none transition-all">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 opacity-30">🔍</span>
             </div>
         </div>
@@ -63,39 +64,39 @@
     </main>
 
     <footer class="bg-white border-t border-slate-200 pt-16 pb-12">
-        <div class="max-w-6xl mx-auto px-4">
+        <div class="max-w-6xl mx-auto px-4 text-center md:text-left">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                 <div class="md:col-span-2">
-                    <h1 class="text-xl font-black mb-4 tracking-tighter uppercase">HARDHAT<span class="text-yellow-500">HUB</span></h1>
-                    <p class="text-slate-500 text-sm max-w-xs mb-4 italic">Connecting the workforce that keeps Canada moving.</p>
+                    <h1 class="text-xl font-black mb-4 uppercase">HARDHAT<span class="text-yellow-500">HUB</span></h1>
+                    <p class="text-slate-500 text-sm max-w-xs mx-auto md:mx-0">Empowering Canada's warehouse and distribution workforce since 2026.</p>
                 </div>
                 <div>
-                    <h4 class="font-bold text-xs uppercase tracking-widest mb-4 italic">Company</h4>
+                    <h4 class="font-bold text-xs uppercase tracking-widest mb-4">Privacy</h4>
                     <ul class="text-slate-500 text-xs space-y-3 font-semibold">
                         <li><button onclick="openModal('privacy')" class="hover:text-black">Privacy Center</button></li>
-                        <li><button onclick="openModal('security')" class="hover:text-black">Security Center</button></li>
-                        <li><button onclick="openModal('accessibility')" class="hover:text-black">Accessibility</button></li>
+                        <li><button onclick="openModal('terms')" class="hover:text-black">Terms of Use</button></li>
+                        <li><button onclick="openModal('donotsell')" class="text-red-500 hover:text-black">Do Not Sell My Info</button></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-xs uppercase tracking-widest mb-4 italic">Legal</h4>
+                    <h4 class="font-bold text-xs uppercase tracking-widest mb-4">Support</h4>
                     <ul class="text-slate-500 text-xs space-y-3 font-semibold">
-                        <li><button onclick="openModal('terms')" class="hover:text-black">Terms of Use</button></li>
-                        <li><button onclick="openModal('adchoices')" class="hover:text-black">AdChoices</button></li>
-                        <li><button onclick="openModal('donotsell')" class="text-red-500 hover:text-black font-bold italic">Do Not Sell My Info</button></li>
+                        <li><button onclick="openModal('security')" class="hover:text-black">Security</button></li>
+                        <li><button onclick="openModal('accessibility')" class="hover:text-black">Accessibility</button></li>
+                        <li><a href="mailto:support@hardhathub.ca" class="hover:text-black">Contact Us</a></li>
                     </ul>
                 </div>
             </div>
             <div class="border-t border-slate-100 pt-8 text-[10px] font-bold text-slate-400 uppercase flex flex-col md:flex-row justify-between gap-4">
-                <p>© 2026 HARDHAT HUB CANADA.</p>
-                <span class="text-blue-500 flex items-center gap-1 cursor-pointer" onclick="openModal('donotsell')">Your Privacy Choices ✓</span>
+                <p>© 2026 HARDHAT HUB CANADA. PIPEDA COMPLIANT.</p>
+                <span class="text-blue-500 cursor-pointer" onclick="openModal('donotsell')">Your Privacy Choices ✓</span>
             </div>
         </div>
     </footer>
 
     <div id="modal-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[300] hidden flex items-center justify-center p-4">
         <div id="modal-container" class="bg-white w-full max-w-2xl rounded-[2.5rem] p-8 md:p-12 relative shadow-2xl">
-            <button id="close-modal-btn" onclick="closeModal()" class="absolute top-6 right-8 text-3xl text-slate-300 hover:text-black">&times;</button>
+            <button onclick="closeModal()" class="absolute top-6 right-8 text-3xl text-slate-300 hover:text-black transition-colors">&times;</button>
             <div id="modal-content"></div>
         </div>
     </div>
@@ -105,8 +106,7 @@
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
         
-        // 1. Stripe Setup (Replace with your actual Publishable Key from Stripe Dashboard)
-        const stripe = Stripe('pk_test_your_key_here'); 
+        const stripe = Stripe('pk_test_your_key'); // 👈 ADD YOUR STRIPE KEY HERE
 
         let allJobs = [];
 
@@ -119,9 +119,9 @@
         function renderJobs(jobs) {
             const grid = document.getElementById('job-grid');
             grid.innerHTML = jobs.map(job => `
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-yellow-400 transition-all flex flex-col justify-between relative group">
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-yellow-400 transition-all flex flex-col justify-between">
                     <div>
-                        <span class="bg-slate-900 text-white text-[9px] font-black px-2 py-1 rounded uppercase tracking-widest mb-4 inline-block">${job.tags[0] || 'Warehouse'}</span>
+                        <span class="bg-slate-900 text-white text-[9px] font-black px-2 py-1 rounded uppercase mb-4 inline-block">${job.tags[0] || 'Warehouse'}</span>
                         <h3 class="text-xl font-black leading-tight mb-2 capitalize">${job.title.toLowerCase()}</h3>
                         <p class="text-sm font-bold text-slate-400 mb-6 uppercase tracking-tight italic">🏢 ${job.company} • 📍 ${job.location}</p>
                     </div>
@@ -131,67 +131,74 @@
         }
 
         const modalContent = {
-            login: `
-                <div class="text-center">
-                    <h2 class="text-2xl font-black mb-2 italic uppercase tracking-tighter">Worker Portal</h2>
-                    <p class="text-slate-400 text-xs mb-8 font-bold uppercase tracking-widest">Manage your warehouse career</p>
-                    <input type="email" placeholder="Email Address" class="w-full p-4 border rounded-2xl shadow-sm outline-none focus:border-yellow-500 mb-4">
-                    <button class="w-full bg-black text-white p-4 rounded-2xl font-black shadow-lg">ENTER PORTAL</button>
-                </div>`,
             postjob: `
-                <h2 class="text-3xl font-black mb-2 italic uppercase tracking-tighter">Post a Job</h2>
-                <p class="text-slate-400 text-xs mb-8 font-bold uppercase tracking-widest">Fast tracking for hiring managers</p>
+                <h2 class="text-3xl font-black mb-2 italic uppercase">Post a Job</h2>
+                <p class="text-slate-400 text-xs mb-8 font-bold uppercase">Priority placement on the logistics feed</p>
                 <form class="space-y-4" onsubmit="triggerCheckout(event)">
-                    <input type="text" placeholder="Job Title" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-yellow-500" required>
-                    <input type="text" placeholder="Company Name" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-yellow-500" required>
-                    <button type="submit" id="checkout-btn" class="w-full bg-black text-white py-5 rounded-2xl font-black shadow-lg uppercase tracking-widest text-sm hover:bg-yellow-500 hover:text-black transition-all">Pay $49 & Post</button>
-                    <p class="text-[10px] text-center text-slate-400 font-bold uppercase">Payment opens in a secure overlay</p>
+                    <input type="text" id="j_title" placeholder="Job Title" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-yellow-500" required>
+                    <input type="text" id="j_comp" placeholder="Company Name" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-yellow-500" required>
+                    <button type="submit" id="pay-btn" class="w-full bg-black text-white py-5 rounded-2xl font-black shadow-lg uppercase tracking-widest text-sm hover:bg-yellow-500 hover:text-black transition-all">Proceed to Payment — $49</button>
                 </form>`,
+            success: `
+                <div class="text-center py-4 success-bg rounded-[2rem]">
+                    <div class="w-20 h-20 bg-yellow-400 text-black rounded-full flex items-center justify-center mx-auto mb-6 text-4xl font-black shadow-xl animate-bounce">✓</div>
+                    <h2 class="text-4xl font-black mb-2 italic uppercase tracking-tighter">Payment Success!</h2>
+                    <p class="text-slate-600 mb-8 font-bold uppercase text-xs tracking-widest">Your listing is being verified</p>
+                    <div class="bg-white p-6 rounded-3xl border border-slate-100 mb-8 text-left shadow-sm">
+                        <p class="text-sm text-slate-500 font-medium leading-relaxed">Thank you for choosing **HardHatHub**. Our team is currently reviewing your job details. You will receive an email confirmation once your post goes live (usually within 2 hours).</p>
+                    </div>
+                    <button onclick="closeModal(); window.history.replaceState({}, document.title, '/');" class="w-full bg-black text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg">Return to Feed</button>
+                </div>`,
             pricing: `
                 <h2 class="text-3xl font-black mb-8 italic uppercase text-center">Employer Plans</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="p-8 border-2 border-slate-100 rounded-[2rem] flex flex-col justify-between">
                         <div>
                             <h4 class="font-black text-lg mb-2 uppercase">Single Post</h4>
-                            <p class="text-4xl font-black my-4 tracking-tighter">$49</p>
+                            <p class="text-4xl font-black my-4">$49</p>
                         </div>
-                        <button onclick="openModal('postjob')" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold uppercase text-xs">Buy Post</button>
+                        <button onclick="openModal('postjob')" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold uppercase text-xs">Post Now</button>
                     </div>
                     <div class="p-8 bg-yellow-50 border-2 border-yellow-500 rounded-[2rem] shadow-lg">
                         <h4 class="font-black text-lg mb-2 uppercase italic text-yellow-700">Monthly Hub</h4>
-                        <p class="text-4xl font-black my-4 tracking-tighter">$99<span class="text-sm font-normal">/mo</span></p>
+                        <p class="text-4xl font-black my-4">$99<span class="text-sm font-normal">/mo</span></p>
                         <button onclick="triggerCheckout(event, 'price_monthly_id')" class="w-full py-4 bg-yellow-500 text-black rounded-xl font-black uppercase text-xs">Subscribe</button>
                     </div>
                 </div>`,
-            privacy: `<h2 class="text-3xl font-black mb-4 italic uppercase tracking-tighter">Privacy Center</h2><div class="legal-scroll text-sm text-slate-600 space-y-4"><p><strong>PIPEDA:</strong> HardHatHub is compliant with Canadian data privacy laws.</p></div>`,
-            terms: `<h2 class="text-3xl font-black mb-4 italic uppercase tracking-tighter">Terms of Use</h2><div class="legal-scroll text-sm text-slate-600 space-y-4 font-medium"><p>By using this portal, you agree to provide accurate information.</p></div>`,
-            donotsell: `<h2 class="text-3xl font-black mb-4 italic text-red-500 uppercase">Privacy Choices</h2><p class="text-sm text-slate-600 mb-6 font-bold uppercase">You have the right to opt-out of data sharing anytime.</p><button onclick="alert('Preference Saved')" class="w-full bg-black text-white p-4 rounded-2xl font-black uppercase text-xs italic">Confirm Preference</button>`
+            login: `<div class="text-center"><h2 class="text-2xl font-black mb-6 italic uppercase">Worker Portal</h2><input type="email" placeholder="Email" class="w-full p-4 border rounded-2xl mb-4"><button class="w-full bg-black text-white p-4 rounded-2xl font-black shadow-lg">SIGN IN</button></div>`,
+            privacy: `<h2 class="text-3xl font-black mb-4 italic uppercase">Privacy Center</h2><div class="legal-scroll text-sm text-slate-600"><p>HardHatHub is PIPEDA compliant. We protect your data with end-to-end encryption.</p></div>`,
+            terms: `<h2 class="text-3xl font-black mb-4 italic uppercase">Terms</h2><div class="legal-scroll text-sm text-slate-600"><p>All job postings must be authentic warehouse or logistics roles.</p></div>`,
+            donotsell: `<h2 class="text-3xl font-black mb-4 text-red-500 uppercase">Privacy Choices</h2><p class="text-sm text-slate-600 mb-6">Opt-out of data sharing.</p><button onclick="alert('Saved')" class="w-full bg-black text-white p-4 rounded-2xl font-black uppercase text-xs">Opt-Out Now</button>`
         };
 
-        // 2. The Pop-up Checkout Logic
-        async function triggerCheckout(e, priceId = 'price_standard_id') {
-            e.preventDefault();
-            const btn = document.getElementById('checkout-btn');
-            if(btn) btn.innerText = "OPENING SECURE PORTAL...";
+        // THE AUTO-SUCCESS CHECKER
+        window.addEventListener('load', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('session_id')) {
+                openModal('success');
+            }
+        });
 
-            // To use the "Pop-up" style with Stripe, you redirect to a "Checkout Session"
-            // You generate the 'price_id' in your Stripe Dashboard under 'Products'
+        async function triggerCheckout(e, priceId = 'price_single_id') {
+            e.preventDefault();
+            const btn = document.getElementById('pay-btn');
+            if(btn) btn.innerText = "REDIRECTING...";
+            
             const { error } = await stripe.redirectToCheckout({
                 lineItems: [{ price: priceId, quantity: 1 }],
                 mode: (priceId.includes('monthly') ? 'subscription' : 'payment'),
-                successUrl: window.location.href + '?session_id={CHECKOUT_SESSION_ID}',
-                cancelUrl: window.location.href,
+                successUrl: window.location.origin + window.location.pathname + '?session_id={CHECKOUT_SESSION_ID}',
+                cancelUrl: window.location.origin + window.location.pathname,
             });
 
             if (error) {
-                console.error("Stripe Error:", error);
-                alert("Checkout failed to load. Please try again.");
-                if(btn) btn.innerText = "Pay $49 & Post";
+                alert(error.message);
+                if(btn) btn.innerText = "Proceed to Payment — $49";
             }
         }
 
         function openModal(type) {
-            document.getElementById('modal-content').innerHTML = modalContent[type] || 'Content coming soon...';
+            document.getElementById('modal-content').innerHTML = modalContent[type] || '...';
             document.getElementById('modal-overlay').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
