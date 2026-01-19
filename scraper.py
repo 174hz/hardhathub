@@ -18,48 +18,50 @@ def get_category(title):
     return "Moving & Logistics"
 
 def scrape():
-    # Using Careerjet Canada - a very reliable source for manual labor
-    search_url = "https://www.careerjet.ca/search/jobs?s=warehouse+laborer&l=Canada&sort=date"
+    # Targets Job Bank Canada directly with a recent search filter
+    search_url = "https://www.jobbank.gc.ca/jobsearch/jobsearch?searchstring=warehouse+laborer&locationstring=Canada&sort=M"
     
-    # Advanced headers to bypass bot detection
+    # We use a Mobile User-Agent to slip through firewalls more easily
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
-        'Referer': 'https://www.google.com/'
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-CA,en-US;q=0.9,en;q=0.8',
     }
 
-    print("Initiating Stealth Scan for HardHatHub...")
+    print("Initiating Direct National Scan (No-Key Mode)...")
     
     try:
-        session = requests.Session()
-        response = session.get(search_url, headers=headers, timeout=20)
+        response = requests.get(search_url, headers=headers, timeout=25)
         
         if response.status_code != 200:
-            print(f"  [!] Connection rejected: {response.status_code}")
+            print(f"  [!] Site blocked the request. Status: {response.status_code}")
             return
 
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Careerjet job item selector
-        jobs = soup.select('.job')
-        print(f"Detected {len(jobs)} active listings on Careerjet...")
+        # This selector targets the standard Job Bank article list
+        articles = soup.find_all('article')
+        print(f"Detected {len(articles)} potential listings...")
 
-        for job in jobs:
+        for job in articles:
             try:
-                title_link = job.select_one('header h2 a')
-                if not title_link: continue
+                # Extracting Title
+                title_elem = job.find('span', class_='title')
+                if not title_elem: continue
+                title = title_elem.get_text(strip=True)
+
+                # Extracting Company
+                company_elem = job.find('li', class_='business')
+                company = company_elem.get_text(strip=True) if company_elem else "Direct Hire"
+
+                # Extracting Location
+                location_elem = job.find('li', class_='location')
+                location = location_elem.get_text(strip=True).replace('Location', '').strip() if location_elem else "Canada"
                 
-                title = title_link.get_text(strip=True)
-                link = "https://www.careerjet.ca" + title_link['href']
-                
-                company = job.select_one('.company_location .company')
-                company = company.get_text(strip=True) if company else "Direct Hire"
-                
-                location = job.select_one('.company_location .locations')
-                location = location.get_text(strip=True) if location else "Canada"
+                # Extracting Link
+                link_elem = job.find('a')
+                if not link_elem or 'href' not in link_elem.attrs: continue
+                link = "https://www.jobbank.gc.ca" + link_elem['href'].split(';')[0]
 
                 category = get_category(title)
                 
@@ -74,13 +76,14 @@ def scrape():
 
                 # Save to Supabase
                 supabase.table("jobs").upsert(job_data, on_conflict="link").execute()
-                print(f"    [+] Saved: {title}")
+                print(f"    [+] Logged: {title}")
                 
             except Exception as e:
                 continue
 
     except Exception as e:
-        print(f"Scan failed: {e}")
+        print(f"Scan interrupted: {e}")
 
 if __name__ == "__main__":
     scrape()
+            
