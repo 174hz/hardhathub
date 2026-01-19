@@ -3,131 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HardHatHub | Canadian Workforce Solutions</title>
+    <title>HardHatHub | Canada Warehouse Jobs</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --primary: #1a252f;
-            --accent: #f1c40f; /* Construction Yellow */
-            --accent-dark: #d4ac0d;
-            --bg: #f4f7f6;
-            --text: #2c3e50;
-        }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; line-height: 1.6; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: var(--bg); color: var(--text); }
-        
-        /* Branding & Header */
-        header { background: var(--primary); color: white; padding: 4rem 2rem; border-radius: 20px; text-align: center; margin-bottom: 40px; position: relative; overflow: hidden; }
-        .logo-area { font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; position: relative; display: inline-block; }
-        .hardhat { position: absolute; top: -25px; left: -10px; font-size: 2.5rem; transform: rotate(-15deg); }
-        header p { opacity: 0.8; font-size: 1.2rem; margin-top: 10px; font-weight: 300; }
-
-        /* Filter Tabs */
-        .filter-container { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 40px; justify-content: center; }
-        .filter-btn { 
-            background: white; border: none; padding: 12px 24px; border-radius: 12px; 
-            cursor: pointer; font-weight: 700; font-size: 0.9rem; transition: all 0.2s; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 8px;
-        }
-        .filter-btn:hover { background: #eee; }
-        .filter-btn.active { background: var(--accent); color: var(--primary); box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4); }
-
-        /* Job Cards */
-        .job-card { background: white; padding: 30px; margin-bottom: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.03); border: 1px solid #eef2f3; transition: transform 0.3s; position: relative; }
-        .job-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.07); }
-        .job-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--accent); border-radius: 20px 0 0 20px; }
-        
-        .job-title { font-size: 1.6rem; font-weight: 800; color: var(--primary); text-decoration: none; display: block; margin-bottom: 8px; }
-        .company { color: #7f8c8d; font-weight: 700; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
-        .location { color: #95a5a6; font-size: 1rem; margin-top: 5px; font-weight: 500; }
-        
-        .tag-container { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
-        .tag { background: #f8f9fa; color: #5d6d7e; padding: 6px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; border: 1px solid #ebedef; }
-        
-        .status-msg { text-align: center; padding: 80px; background: white; border-radius: 20px; border: 3px dashed #dcdde1; }
+        .job-card:hover { transform: translateY(-2px); transition: all 0.2s; }
+        .filter-btn.active { background-color: #fbbf24; color: black; border-color: #fbbf24; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-900">
 
-    <header>
-        <div class="logo-area">
-            <span class="hardhat">👷</span>H<span style="color:var(--accent)">ardHat</span>Hub
+    <nav class="bg-white border-b border-gray-200 py-4 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-tighter flex items-center">
+                <span class="mr-1">👷</span> HARDHAT<span class="text-yellow-500">HUB</span>
+            </h1>
+            <span class="text-xs font-mono bg-yellow-100 px-2 py-1 rounded">CANADA LIVE FEED</span>
         </div>
-        <p>National Workforce Solutions for Logistics & Industrial Operations</p>
-    </header>
+    </nav>
 
-    <div class="filter-container" id="filter-bar">
-        <button class="filter-btn active" onclick="filterJobs('All')">📂 All Openings</button>
-        <button class="filter-btn" onclick="filterJobs('Loading & Unloading')">📦 Loading</button>
-        <button class="filter-btn" onclick="filterJobs('Picking & Packing')">🏷️ Packing</button>
-        <button class="filter-btn" onclick="filterJobs('Inventory & Stocking')">📋 Inventory</button>
-        <button class="filter-btn" onclick="filterJobs('Machinery & Forklift')">🚜 Machinery</button>
-        <button class="filter-btn" onclick="filterJobs('Moving & Logistics')">🚚 Logistics</button>
-    </div>
+    <div class="max-w-5xl mx-auto px-4 py-6">
+        <div class="flex flex-wrap gap-2 mb-8" id="filter-container">
+            <button onclick="filterJobs('all')" class="filter-btn active border px-4 py-2 rounded-full text-sm font-medium transition">All Jobs</button>
+            <button onclick="filterJobs('Machinery & Forklift')" class="filter-btn border px-4 py-2 rounded-full text-sm font-medium transition">Machinery</button>
+            <button onclick="filterJobs('Picking & Packing')" class="filter-btn border px-4 py-2 rounded-full text-sm font-medium transition">Packing</button>
+            <button onclick="filterJobs('Loading & Unloading')" class="filter-btn border px-4 py-2 rounded-full text-sm font-medium transition">Loading</button>
+            <button onclick="filterJobs('Inventory & Stocking')" class="filter-btn border px-4 py-2 rounded-full text-sm font-medium transition">Inventory</button>
+        </div>
 
-    <div id="job-container">
-        <div class="status-msg">
-            <h3>Synchronizing national database...</h3>
-            <p>Scanning for active industrial and logistics postings.</p>
+        <div id="job-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+            <div class="text-center py-20 text-gray-500">Connecting to National Database...</div>
         </div>
     </div>
 
     <script>
-        const SUPABASE_URL = "https://oakwbsqdcljxckfmjyva.supabase.co"; 
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_URL = "YOUR_SUPABASE_URL";
+        const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let allJobs = [];
 
         async function fetchJobs() {
-            const { data, error } = await supabaseClient
+            const { data, error } = await supabase
                 .from('jobs')
                 .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) {
-                document.getElementById('job-container').innerHTML = "<div class='status-msg'>System optimization in progress. Please check back shortly.</div>";
+                console.error('Error:', error);
+                document.getElementById('job-grid').innerHTML = "Failed to load jobs.";
                 return;
             }
 
-            allJobs = data || [];
-            displayJobs(allJobs);
+            allJobs = data;
+            renderJobs(data);
         }
 
-        function displayJobs(jobsList) {
-            const container = document.getElementById('job-container');
-            
-            if (jobsList.length === 0) {
-                container.innerHTML = `
-                    <div class="status-msg">
-                        <h3>No listings currently in this category.</h3>
-                        <p>Our systems are searching relevant job postings nationally. Updated results expected within the hour.</p>
-                    </div>`;
+        function renderJobs(jobs) {
+            const grid = document.getElementById('job-grid');
+            if (jobs.length === 0) {
+                grid.innerHTML = "<div class='py-10'>No listings found in this category today.</div>";
                 return;
             }
 
-            container.innerHTML = jobsList.map(job => `
-                <div class="job-card">
-                    <a href="${job.link}" target="_blank" class="job-title">${job.title}</a>
-                    <div class="company">${job.company}</div>
-                    <div class="location">📍 ${job.location}</div>
-                    <div class="tag-container">
-                        ${job.tags ? job.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
-                        <span class="tag" style="background:#fff9db; color:#f08c00;">Verified Posting</span>
+            grid.innerHTML = jobs.map(job => `
+                <div class="job-card bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs font-bold uppercase tracking-wider text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded">${job.tags[0]}</span>
+                            <span class="text-xs text-gray-400 font-medium">${new Date(job.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-900">${job.title}</h2>
+                        <div class="flex items-center gap-3 mt-2 text-gray-600">
+                            <span class="font-medium flex items-center">🏢 ${job.company}</span>
+                            <span class="flex items-center text-blue-600 font-semibold">📍 ${job.location}</span>
+                        </div>
                     </div>
+                    <a href="${job.link}" target="_blank" class="bg-gray-900 text-white text-center px-6 py-3 rounded-md font-bold hover:bg-yellow-500 hover:text-black transition">View Job</a>
                 </div>
             `).join('');
         }
 
         function filterJobs(category) {
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
+            // UI Toggle
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
-            if (category === 'All') {
-                displayJobs(allJobs);
+            if (category === 'all') {
+                renderJobs(allJobs);
             } else {
-                const filtered = allJobs.filter(job => job.tags && job.tags.includes(category));
-                displayJobs(filtered);
+                const filtered = allJobs.filter(j => j.tags.includes(category));
+                renderJobs(filtered);
             }
         }
 
