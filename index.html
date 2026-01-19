@@ -12,21 +12,23 @@
         .filter-btn.active { background: #000; color: #fff; border-color: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
         .modal-active { overflow: hidden; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        /* Professional Scrollbar for Legal Content */
+        .legal-scroll { max-height: 60vh; overflow-y: auto; padding-right: 15px; }
+        .legal-scroll::-webkit-scrollbar { width: 4px; }
+        .legal-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900">
 
     <nav class="glass-nav border-b border-slate-200 py-4 sticky top-0 z-[100]">
         <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-xl md:text-2xl font-black tracking-tighter flex items-center gap-2">
+            <h1 class="text-xl md:text-2xl font-black tracking-tighter flex items-center gap-2 cursor-pointer" onclick="window.location.reload()">
                 <span class="bg-yellow-500 text-black px-2 py-0.5 rounded">HH</span>
                 <span>HARDHAT<span class="text-yellow-500">HUB</span></span>
             </h1>
             
             <div class="hidden md:flex items-center gap-6">
-                <button onclick="openModal('advertise')" class="text-sm font-bold text-slate-500 hover:text-black">Advertise</button>
+                <button onclick="openModal('pricing')" class="text-sm font-extrabold text-blue-600 hover:text-blue-800 tracking-tight">FOR EMPLOYERS</button>
                 <button onclick="openModal('login')" class="bg-black text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg hover:bg-yellow-500 hover:text-black transition-all">Sign In</button>
             </div>
 
@@ -37,8 +39,8 @@
     <div id="mobile-menu" class="fixed inset-0 bg-white z-[200] hidden flex-col p-8">
         <button class="text-4xl absolute top-6 right-6" onclick="toggleMobileMenu()">×</button>
         <div class="flex flex-col gap-8 mt-12 text-2xl font-extrabold">
+            <button onclick="toggleMobileMenu(); openModal('pricing')">For Employers</button>
             <button onclick="toggleMobileMenu(); openModal('login')">Sign In</button>
-            <button onclick="toggleMobileMenu(); openModal('advertise')">Advertise</button>
             <button onclick="toggleMobileMenu(); window.scrollTo(0,document.body.scrollHeight)">Legal & Privacy</button>
         </div>
     </div>
@@ -76,15 +78,14 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                 <div class="md:col-span-2">
                     <h1 class="text-xl font-black mb-4">HARDHAT HUB</h1>
-                    <p class="text-slate-500 text-sm max-w-xs">Connecting Canada's essential workforce with top-tier logistics employers through secure data integration.</p>
+                    <p class="text-slate-500 text-sm max-w-xs">Connecting Canada's logistics workforce with national opportunities using secure, specialized data.</p>
                 </div>
                 <div>
-                    <h4 class="font-bold text-xs uppercase tracking-widest mb-4">Company</h4>
+                    <h4 class="font-bold text-xs uppercase tracking-widest mb-4">Platform</h4>
                     <ul class="text-slate-500 text-xs space-y-3 font-semibold">
                         <li><button onclick="openModal('privacy')" class="hover:text-black">Privacy Center</button></li>
                         <li><button onclick="openModal('security')" class="hover:text-black">Security Center</button></li>
                         <li><button onclick="openModal('accessibility')" class="hover:text-black">Accessibility</button></li>
-                        <li><button onclick="openModal('advertise')" class="hover:text-black">Advertise with us</button></li>
                     </ul>
                 </div>
                 <div>
@@ -97,7 +98,7 @@
                 </div>
             </div>
             <div class="border-t border-slate-100 pt-8 text-[10px] font-bold text-slate-400 uppercase flex flex-col md:flex-row justify-between gap-4">
-                <p>© 2026 HARDHAT HUB CANADA. ALL RIGHTS RESERVED.</p>
+                <p>© 2026 HARDHAT HUB CANADA. PIPEDA COMPLIANT.</p>
                 <div class="flex gap-4 items-center">
                     <span class="text-blue-500">Your Privacy Choices ✓</span>
                 </div>
@@ -105,41 +106,38 @@
         </div>
     </footer>
 
-    <div id="modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] hidden flex items-center justify-center p-4">
-        <div id="modal-container" class="bg-white w-full max-w-2xl rounded-3xl p-6 md:p-10 relative max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl">
-            <button onclick="closeModal()" class="fixed top-8 right-8 text-4xl text-white md:text-slate-400 font-light">&times;</button>
+    <div id="modal-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[300] hidden flex items-center justify-center p-4">
+        <div id="modal-container" class="bg-white w-full max-w-2xl rounded-[2rem] p-8 md:p-12 relative shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-6 right-8 text-3xl text-slate-400 hover:text-black">&times;</button>
             <div id="modal-content"></div>
         </div>
     </div>
 
     <script>
-        // Supabase Settings
         const SB_URL = "https://oakwbsqdcljxckfmjyva.supabase.co"; 
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
         let allJobs = [];
 
-        // 1. MOBILE MENU TOGGLE
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
             menu.classList.toggle('flex');
         }
 
-        // 2. SEARCH & FILTER
         async function fetchJobs() {
             try {
                 const { data, error } = await _supabase.from('jobs').select('*').order('created_at', { ascending: false });
                 if (error) throw error;
                 allJobs = data || [];
                 renderJobs(allJobs);
-            } catch (err) { console.error("Fetch error:", err); }
+            } catch (err) { console.error(err); }
         }
 
         function renderJobs(jobs) {
             const grid = document.getElementById('job-grid');
             if (jobs.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-20 text-center font-bold text-slate-400 bg-white rounded-3xl">No jobs found in this category. Check back tomorrow!</div>`;
+                grid.innerHTML = `<div class="col-span-full py-20 text-center font-bold text-slate-400 bg-white rounded-3xl">Check back soon for new listings.</div>`;
                 return;
             }
             grid.innerHTML = jobs.map(job => {
@@ -151,10 +149,7 @@
                         <span class="bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg">${tag}</span>
                     </div>
                     <h3 class="text-xl font-black text-slate-900 mb-2 leading-tight">${cleanTitle}</h3>
-                    <div class="mb-6 space-y-1">
-                        <p class="text-xs font-bold text-slate-400">🏢 ${job.company || 'Direct Employer'}</p>
-                        <p class="text-xs font-bold text-blue-600">📍 ${job.location || 'Canada'}</p>
-                    </div>
+                    <p class="text-xs font-bold text-slate-400 mb-6">🏢 ${job.company || 'Direct Employer'} • 📍 ${job.location || 'Canada'}</p>
                     <a href="${job.link}" target="_blank" class="block w-full bg-slate-50 text-black text-center py-4 rounded-2xl font-black hover:bg-black hover:text-white transition-all shadow-sm">VIEW POSTING</a>
                 </div>`;
             }).join('');
@@ -173,68 +168,69 @@
             else renderJobs(allJobs.filter(j => j.tags && j.tags.includes(cat)));
         }
 
-        // 3. ROBUST CONTENT MODALS
         const modalContent = {
-            login: `
-                <h2 class="text-3xl font-black mb-4">Sign In</h2>
-                <p class="text-slate-500 mb-8">Access your saved jobs and application history.</p>
-                <div class="space-y-4">
-                    <input type="email" placeholder="Email" class="w-full p-4 border rounded-2xl">
-                    <input type="password" placeholder="Password" class="w-full p-4 border rounded-2xl">
-                    <button class="w-full bg-black text-white p-4 rounded-2xl font-black">SIGN IN</button>
-                </div>`,
-            advertise: `
-                <h2 class="text-3xl font-black mb-4">Advertise with Us</h2>
-                <p class="text-slate-500 mb-6">Reach 10,000+ logistics professionals across Canada weekly.</p>
-                <div class="space-y-4">
-                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                        <h4 class="font-black">Direct Job Boosting</h4>
-                        <p class="text-xs text-slate-500">Put your warehouse role at the very top for 7 days.</p>
+            pricing: `
+                <h2 class="text-3xl font-black mb-2">Grow your warehouse.</h2>
+                <p class="text-slate-500 mb-8">Competitive pricing to help you hire faster.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-6 border-2 border-slate-100 rounded-3xl hover:border-yellow-500 transition-all">
+                        <h4 class="font-black text-lg">Single Ad</h4>
+                        <p class="text-3xl font-black my-2">$49 <span class="text-sm font-normal text-slate-400">/ 30 days</span></p>
+                        <ul class="text-xs space-y-2 mb-6 text-slate-500">
+                            <li>✓ Targeted to Logistics Workers</li>
+                            <li>✓ Standard Search Placement</li>
+                        </ul>
+                        <button class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold">Post Now</button>
                     </div>
-                    <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                        <h4 class="font-black">AdChoices Affiliates</h4>
-                        <p class="text-xs text-slate-500">Integrate targeted display ads to our high-intent users.</p>
+                    <div class="p-6 border-2 border-yellow-500 bg-yellow-50 rounded-3xl relative">
+                        <span class="absolute -top-3 left-6 bg-yellow-500 text-black text-[10px] font-black px-3 py-1 rounded-full uppercase">Best Value</span>
+                        <h4 class="font-black text-lg">Monthly Hub</h4>
+                        <p class="text-3xl font-black my-2">$99 <span class="text-sm font-normal text-slate-400">/ month</span></p>
+                        <ul class="text-xs space-y-2 mb-6 text-slate-600">
+                            <li>✓ Unlimited Job Postings</li>
+                            <li>✓ Featured Badges on all ads</li>
+                        </ul>
+                        <button class="w-full bg-yellow-500 text-black py-3 rounded-xl font-bold shadow-lg">Start Free Trial</button>
                     </div>
-                    <button class="w-full bg-black text-white p-4 rounded-2xl font-black">GET RATE CARD</button>
                 </div>`,
             privacy: `
-                <h2 class="text-3xl font-black mb-4 uppercase italic">Privacy Center</h2>
-                <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
-                    <p><strong>Overview:</strong> At HardHatHub, your privacy is our structural foundation. We process data under the Personal Information Protection and Electronic Documents Act (PIPEDA).</p>
-                    <p><strong>Data Collection:</strong> We aggregate publicly available job information. We do not store personal applicant data unless you create an account.</p>
-                    <p><strong>Tracking:</strong> We use cookies only to optimize your search preferences and analyze platform traffic.</p>
-                </div>`,
-            security: `
-                <h2 class="text-3xl font-black mb-4 uppercase italic">Security Center</h2>
-                <div class="space-y-4 text-slate-600 text-sm">
-                    <p><strong>Encryption:</strong> All database interactions via Supabase are protected by AES-256 encryption at rest and TLS 1.3 in transit.</p>
-                    <p><strong>Verification:</strong> Our backend scrapers are isolated to prevent unauthorized write-access to our career data.</p>
-                    <p><strong>Report a Vulnerability:</strong> Please contact security@hardhathub.ca.</p>
-                </div>`,
-            accessibility: `
-                <h2 class="text-3xl font-black mb-4 uppercase italic">Accessibility</h2>
-                <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
-                    <p>We are committed to WCAG 2.1 compliance to ensure every essential worker in Canada can access career opportunities. This site supports screen readers and high-contrast navigation.</p>
+                <h2 class="text-3xl font-black mb-4">Privacy Notice</h2>
+                <div class="legal-scroll text-sm text-slate-600 space-y-4">
+                    <p><strong>Last Updated: January 2026</strong></p>
+                    <p>At HardHatHub, your privacy is our core priority. This notice explains how we collect, use, and protect your data in alignment with Canada’s PIPEDA regulations.</p>
+                    <h4 class="font-bold text-slate-900">1. Information We Collect</h4>
+                    <p>We collect information you provide directly (resumes, account details) and information automatically collected via cookies to enhance your job search experience.</p>
+                    <h4 class="font-bold text-slate-900">2. How We Use Information</h4>
+                    <p>Your data is used solely to connect you with employers, provide career alerts, and improve platform security. We do not sell your personal identifying information.</p>
+                    <h4 class="font-bold text-slate-900">3. Your Rights</h4>
+                    <p>You have the right to access, correct, or delete your personal data at any time. Use the "Do Not Sell My Info" link to manage third-party data sharing.</p>
+                    <p><em>This policy is modeled after industry leaders like Monster.com to ensure the highest standards of user protection.</em></p>
                 </div>`,
             terms: `
-                <h2 class="text-3xl font-black mb-4 uppercase italic">Terms of Use</h2>
-                <div class="space-y-4 text-slate-600 text-[11px] leading-relaxed">
-                    <p><strong>1. Acceptance:</strong> By using HardHatHub, you agree to our career-sourcing protocols.</p>
-                    <p><strong>2. Accuracy:</strong> While we aggregate live data, the final employment contract remains between you and the employer.</p>
-                    <p><strong>3. Use:</strong> Commercial scraping of our aggregated data is strictly prohibited.</p>
+                <h2 class="text-3xl font-black mb-4">Terms of Use</h2>
+                <div class="legal-scroll text-sm text-slate-600 space-y-4 font-medium">
+                    <p><strong>1. Binding Agreement</strong></p>
+                    <p>By accessing HardHatHub, you agree to be bound by these Terms and our Privacy Notice. If you do not agree, please discontinue use immediately.</p>
+                    <p><strong>2. User Conduct</strong></p>
+                    <p>Users must provide accurate information and may not use the platform for fraudulent activity, unauthorized scraping, or harassment of other users.</p>
+                    <p><strong>3. Intellectual Property</strong></p>
+                    <p>All content, branding, and platform architecture are the exclusive property of HardHatHub. Unauthorized reproduction is strictly prohibited.</p>
+                    <p><strong>4. Liability</strong></p>
+                    <p>HardHatHub is a career destination portal. We facilitate connections but are not responsible for the ultimate terms of employment between Users and Employers.</p>
                 </div>`,
-            adchoices: `
-                <h2 class="text-3xl font-black mb-4">AdChoices</h2>
-                <p class="text-slate-600 text-sm mb-4">HardHatHub uses interest-based advertising to fund our free job network. We partner with vetted ad networks to show you relevant roles.</p>
-                <button class="bg-blue-600 text-white px-6 py-2 rounded font-bold text-xs">OPT OUT OF TRACKING</button>`,
             donotsell: `
-                <h2 class="text-3xl font-black mb-4 text-red-500 italic">Do Not Sell My Info</h2>
-                <p class="text-slate-600 text-sm mb-6">HardHatHub does not sell candidate databases to third parties. Under PIPEDA, you have the right to request a full purge of any behavioral data we hold.</p>
-                <button class="w-full border-2 border-red-500 text-red-500 p-4 rounded-2xl font-black">REQUEST DATA DELETION</button>`
+                <h2 class="text-3xl font-black mb-4 text-red-500">Your Privacy Choices</h2>
+                <p class="text-slate-600 text-sm mb-6">HardHatHub respects your right to control your data. Under Canadian privacy laws, you can opt-out of the "sale" or sharing of your data for advertising purposes.</p>
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 mb-6">
+                    <h4 class="font-bold mb-2">Global Privacy Control</h4>
+                    <p class="text-xs text-slate-500">We recognize GPC signals from your browser. If active, we automatically limit data sharing.</p>
+                </div>
+                <button onclick="alert('Preference Saved')" class="w-full bg-slate-900 text-white p-4 rounded-2xl font-black">OPT-OUT OF DATA SHARING</button>`,
+            login: `<h2 class="text-2xl font-black mb-6">Welcome Back</h2><input type="email" placeholder="Email" class="w-full p-4 border rounded-2xl mb-4"><button class="w-full bg-black text-white p-4 rounded-2xl font-black">CONTINUE</button>`
         };
 
         function openModal(type) {
-            document.getElementById('modal-content').innerHTML = modalContent[type];
+            document.getElementById('modal-content').innerHTML = modalContent[type] || 'Content coming soon...';
             document.getElementById('modal-overlay').classList.remove('hidden');
             document.body.classList.add('modal-active');
         }
@@ -244,15 +240,7 @@
             document.body.classList.remove('modal-active');
         }
 
-        // Close on overlay click
-        window.onclick = function(event) {
-            const overlay = document.getElementById('modal-overlay');
-            if (event.target == overlay) closeModal();
-        }
-
         fetchJobs();
     </script>
 </body>
 </html>
-
-        
