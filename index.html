@@ -11,8 +11,9 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .filter-btn.active { background: #000; color: #fff; border-color: #000; }
         .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .legal-scroll { max-height: 50vh; overflow-y: auto; }
-        .step-pill.active { background: #eab308; color: black; }
+        .legal-scroll { max-height: 50vh; overflow-y: auto; padding-right: 10px; }
+        .legal-scroll::-webkit-scrollbar { width: 4px; }
+        .legal-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900">
@@ -50,11 +51,11 @@
     <main class="max-w-6xl mx-auto px-4 py-12">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
             <div>
-                <h2 class="text-3xl font-black tracking-tight">Current Openings</h2>
-                <p class="text-slate-400 font-medium">Verified warehouse & logistics roles across Canada.</p>
+                <h2 class="text-3xl font-black tracking-tight">Canada Logistics Feed</h2>
+                <p class="text-slate-400 font-medium italic">Connecting the essential workforce.</p>
             </div>
             <div class="relative w-full md:w-72">
-                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="City or Title..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-yellow-400 transition-all">
+                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="City or Title..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-yellow-400 transition-all shadow-sm">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 opacity-30">🔍</span>
             </div>
         </div>
@@ -63,22 +64,59 @@
             </div>
     </main>
 
+    <footer class="bg-white border-t border-slate-200 pt-16 pb-12">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="md:col-span-2">
+                    <h1 class="text-xl font-black mb-4 tracking-tighter uppercase">HARDHAT<span class="text-yellow-500">HUB</span></h1>
+                    <p class="text-slate-500 text-sm max-w-xs mb-4">The premier career network for Canada's warehousing, machinery, and logistics sectors.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-xs uppercase tracking-widest mb-4">Company</h4>
+                    <ul class="text-slate-500 text-xs space-y-3 font-semibold">
+                        <li><button onclick="openModal('privacy')" class="hover:text-black">Privacy Center</button></li>
+                        <li><button onclick="openModal('security')" class="hover:text-black">Security Center</button></li>
+                        <li><button onclick="openModal('accessibility')" class="hover:text-black">Accessibility</button></li>
+                        <li><button onclick="openModal('pricing')" class="hover:text-black">For Employers</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-xs uppercase tracking-widest mb-4">Legal</h4>
+                    <ul class="text-slate-500 text-xs space-y-3 font-semibold">
+                        <li><button onclick="openModal('terms')" class="hover:text-black">Terms of Use</button></li>
+                        <li><button onclick="openModal('adchoices')" class="hover:text-black">AdChoices</button></li>
+                        <li><button onclick="openModal('donotsell')" class="text-red-500 hover:text-black font-bold">Do Not Sell My Info</button></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-100 pt-8 text-[10px] font-bold text-slate-400 uppercase flex flex-col md:flex-row justify-between gap-4">
+                <p>© 2026 HARDHAT HUB CANADA. PIPEDA COMPLIANT.</p>
+                <div class="flex gap-4 items-center">
+                    <span class="text-blue-500 flex items-center gap-1 cursor-pointer" onclick="openModal('donotsell')">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V7h2v2z"/></svg>
+                        Your Privacy Choices
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <div id="modal-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[300] hidden flex items-center justify-center p-4">
-        <div id="modal-container" class="bg-white w-full max-w-2xl rounded-[2.5rem] p-8 md:p-12 relative shadow-2xl overflow-y-auto max-h-[95vh]">
+        <div id="modal-container" class="bg-white w-full max-w-2xl rounded-[2.5rem] p-8 md:p-12 relative shadow-2xl">
             <button onclick="closeModal()" class="absolute top-6 right-8 text-3xl text-slate-300 hover:text-black">&times;</button>
             <div id="modal-content"></div>
         </div>
     </div>
 
     <script>
+        // Supabase Settings
         const SB_URL = "https://oakwbsqdcljxckfmjyva.supabase.co"; 
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
         let allJobs = [];
 
-        // Stripe Checkout Links (Create these in your Stripe Dashboard)
-        const STRIPE_SINGLE_POST = "https://buy.stripe.com/your_test_link_here";
-        const STRIPE_MONTHLY_HUB = "https://buy.stripe.com/your_test_link_here_2";
+        // Stripe Links (Placeholder)
+        const STRIPE_SINGLE_POST = "https://buy.stripe.com/your_test_link";
 
         async function fetchJobs() {
             const { data } = await _supabase.from('jobs').select('*').order('created_at', { ascending: false });
@@ -89,75 +127,70 @@
         function renderJobs(jobs) {
             const grid = document.getElementById('job-grid');
             grid.innerHTML = jobs.map(job => `
-                <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-yellow-400 transition-all group flex flex-col justify-between">
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-yellow-400 transition-all flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center gap-2 mb-4">
-                            <span class="bg-slate-900 text-white text-[9px] font-black px-2 py-1 rounded uppercase tracking-tighter">${job.tags[0] || 'Warehouse'}</span>
-                            <span class="text-[9px] font-bold text-slate-300 uppercase italic">Verified</span>
-                        </div>
-                        <h3 class="text-lg font-black leading-tight mb-2 group-hover:text-yellow-600 transition-colors capitalize">${job.title.toLowerCase()}</h3>
-                        <p class="text-sm font-bold text-slate-400 mb-6">🏢 ${job.company} <br>📍 ${job.location}</p>
+                        <span class="bg-slate-900 text-white text-[9px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter mb-4 inline-block">${job.tags[0] || 'Logistics'}</span>
+                        <h3 class="text-xl font-black leading-tight mb-2 capitalize">${job.title.toLowerCase()}</h3>
+                        <p class="text-sm font-bold text-slate-400 mb-6 uppercase tracking-tight">🏢 ${job.company} • 📍 ${job.location}</p>
                     </div>
-                    <a href="${job.link}" target="_blank" class="block w-full bg-slate-50 text-slate-900 text-center py-4 rounded-2xl font-black text-sm hover:bg-yellow-500 transition-all italic">VIEW DETAILS</a>
+                    <a href="${job.link}" target="_blank" class="block w-full bg-slate-50 text-slate-900 text-center py-4 rounded-2xl font-black text-xs hover:bg-black hover:text-white transition-all italic">VIEW POSTING</a>
                 </div>
             `).join('');
         }
 
         const modalContent = {
             postjob: `
-                <div class="text-center mb-8">
-                    <span class="bg-blue-50 text-blue-600 px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest">Employer Portal</span>
-                    <h2 class="text-3xl font-black mt-4">Post a Job</h2>
-                    <p class="text-slate-400 text-sm">Reach Canada's essential workforce in minutes.</p>
-                </div>
-                <form onsubmit="handleJobPost(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="post_title" placeholder="Job Title (e.g. Forklift Operator)" class="p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-yellow-500" required>
-                        <input type="text" id="post_company" placeholder="Company Name" class="p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-yellow-500" required>
-                    </div>
-                    <input type="text" id="post_location" placeholder="Location (City, Province)" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-yellow-500" required>
-                    <textarea id="post_desc" placeholder="Brief job description or link to your ATS..." class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl h-32 outline-none focus:border-yellow-500" required></textarea>
-                    
-                    <div class="bg-yellow-50 p-6 rounded-3xl border border-yellow-100 flex items-center justify-between">
-                        <div>
-                            <p class="text-xs font-black text-yellow-700 uppercase">Standard Placement</p>
-                            <p class="text-xl font-black">$49.00 <span class="text-xs font-normal">/ 30 Days</span></p>
-                        </div>
-                        <button type="submit" class="bg-black text-white px-8 py-4 rounded-2xl font-black shadow-lg hover:scale-105 transition-all">PAY & POST</button>
-                    </div>
+                <h2 class="text-3xl font-black mb-2 italic">Post a Job</h2>
+                <p class="text-slate-400 text-sm mb-8">Direct access to 10,000+ logistics professionals.</p>
+                <form class="space-y-4">
+                    <input type="text" placeholder="Job Title" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-yellow-500">
+                    <input type="text" placeholder="Company Name" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-yellow-500">
+                    <input type="text" placeholder="Location" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:border-yellow-500">
+                    <button type="button" onclick="window.location.href='${STRIPE_SINGLE_POST}'" class="w-full bg-black text-white py-5 rounded-2xl font-black shadow-lg">CONTINUE TO CHECKOUT — $49</button>
                 </form>`,
             pricing: `
-                <h2 class="text-3xl font-black mb-8 text-center">Employer Solutions</h2>
+                <h2 class="text-3xl font-black mb-8 italic">Employer Pricing</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="p-8 border-2 border-slate-100 rounded-[2.5rem] flex flex-col justify-between">
+                    <div class="p-8 border-2 border-slate-100 rounded-[2rem] flex flex-col justify-between">
                         <div>
-                            <h4 class="font-black text-xl mb-2 italic">Single Ad</h4>
-                            <p class="text-slate-400 text-sm mb-6">Perfect for urgent hires or small warehouses.</p>
-                            <p class="text-4xl font-black mb-8">$49 <span class="text-sm font-normal">/post</span></p>
+                            <h4 class="font-black text-lg mb-2">Single Ad</h4>
+                            <p class="text-4xl font-black my-4">$49</p>
+                            <p class="text-xs text-slate-400 mb-6">30-day live listing on our national feed.</p>
                         </div>
-                        <button onclick="window.location.href='${STRIPE_SINGLE_POST}'" class="w-full py-4 border-2 border-black rounded-2xl font-black hover:bg-black hover:text-white transition-all">BUY NOW</button>
+                        <button onclick="openModal('postjob')" class="w-full py-4 bg-slate-900 text-white rounded-xl font-bold">Buy Post</button>
                     </div>
-                    <div class="p-8 bg-slate-900 text-white rounded-[2.5rem] flex flex-col justify-between shadow-2xl">
+                    <div class="p-8 bg-yellow-50 border-2 border-yellow-500 rounded-[2rem] flex flex-col justify-between shadow-lg">
                         <div>
-                            <h4 class="font-black text-xl mb-2 italic text-yellow-500">Monthly Hub</h4>
-                            <p class="text-slate-400 text-sm mb-6">Unlimited postings for high-volume logistics.</p>
-                            <p class="text-4xl font-black mb-8">$99 <span class="text-sm font-normal text-slate-500">/mo</span></p>
+                            <h4 class="font-black text-lg mb-2">Monthly Hub</h4>
+                            <p class="text-4xl font-black my-4">$99<span class="text-sm font-normal">/mo</span></p>
+                            <p class="text-xs text-slate-600 mb-6">Unlimited postings and featured badges.</p>
                         </div>
-                        <button onclick="window.location.href='${STRIPE_MONTHLY_HUB}'" class="w-full py-4 bg-yellow-500 text-black rounded-2xl font-black hover:bg-white transition-all">START FREE TRIAL</button>
+                        <button class="w-full py-4 bg-yellow-500 text-black rounded-xl font-black">Subscribe Now</button>
                     </div>
                 </div>`,
-            login: `<h2 class="text-2xl font-black mb-6">Worker Sign In</h2><input type="email" placeholder="Email" class="w-full p-4 border rounded-2xl mb-4"><button class="w-full bg-black text-white p-4 rounded-2xl font-black">CONTINUE</button>`
+            privacy: `
+                <h2 class="text-3xl font-black mb-4 italic">Privacy Center</h2>
+                <div class="legal-scroll text-sm text-slate-600 space-y-4">
+                    <p><strong>PIPEDA Compliance:</strong> HardHatHub is designed to be fully compliant with Canada's Personal Information Protection and Electronic Documents Act.</p>
+                    <p><strong>What we collect:</strong> We collect behavioral search data and contact information provided during job posting to facilitate the hiring process.</p>
+                    <p><strong>Third-Party Sharing:</strong> We do not sell your personal data. We use industry-standard encryption for all data handled by our partner, Supabase.</p>
+                </div>`,
+            terms: `
+                <h2 class="text-3xl font-black mb-4 italic">Terms of Use</h2>
+                <div class="legal-scroll text-sm text-slate-600 space-y-4">
+                    <p><strong>1. Binding Agreement:</strong> By using HardHatHub, you agree to these Terms and our Privacy Policy.</p>
+                    <p><strong>2. User Conduct:</strong> You may not use automated scripts to harvest data from our platform. Employers must provide accurate, non-discriminatory job descriptions.</p>
+                    <p><strong>3. Liability:</strong> HardHatHub is a connecting platform. We are not liable for any employment disputes arising between users and employers.</p>
+                </div>`,
+            security: `<h2 class="text-3xl font-black mb-4 italic">Security Center</h2><p class="text-sm text-slate-600">All transactions are processed through Stripe (PCI-DSS Level 1). Our database is hosted via Supabase with row-level security enabled.</p>`,
+            accessibility: `<h2 class="text-3xl font-black mb-4 italic">Accessibility</h2><p class="text-sm text-slate-600">We aim for WCAG 2.1 Level AA compliance, ensuring our job feed is usable by everyone in the logistics industry.</p>`,
+            adchoices: `<h2 class="text-3xl font-black mb-4 italic">AdChoices</h2><p class="text-sm text-slate-600">We partner with ad networks to fund this free job board. You can opt-out of interest-based ads via your browser settings.</p>`,
+            donotsell: `<h2 class="text-3xl font-black mb-4 italic text-red-500">Do Not Sell My Info</h2><p class="text-sm text-slate-600">You have the right to opt-out of data sharing. HardHatHub does not sell contact lists or candidate databases to third-party marketing firms.</p><button class="mt-4 bg-black text-white px-6 py-2 rounded-xl text-xs font-bold">Request Data Deletion</button>`,
+            login: `<h2 class="text-2xl font-black mb-6 italic uppercase tracking-tighter">Worker Portal</h2><input type="email" placeholder="Email Address" class="w-full p-4 border rounded-2xl mb-4 shadow-sm outline-none focus:border-yellow-500"><button class="w-full bg-black text-white p-4 rounded-2xl font-black shadow-lg">CONTINUE</button>`
         };
 
-        function handleJobPost(e) {
-            e.preventDefault();
-            // In a real app, we would save the form data to a 'pending' table in Supabase here
-            // Then redirect to Stripe
-            window.location.href = STRIPE_SINGLE_POST;
-        }
-
         function openModal(type) {
-            document.getElementById('modal-content').innerHTML = modalContent[type];
+            document.getElementById('modal-content').innerHTML = modalContent[type] || 'Content coming soon...';
             document.getElementById('modal-overlay').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
@@ -165,6 +198,12 @@
         function closeModal() {
             document.getElementById('modal-overlay').classList.add('hidden');
             document.body.style.overflow = 'auto';
+        }
+
+        function handleSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allJobs.filter(j => j.title.toLowerCase().includes(q) || j.location.toLowerCase().includes(q));
+            renderJobs(filtered);
         }
 
         function toggleMobileMenu() {
