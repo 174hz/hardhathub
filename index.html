@@ -37,7 +37,7 @@
                 <span class="uppercase">HARDHAT<span class="text-yellow-500">HUB</span></span>
             </h1>
             <div class="flex items-center gap-8">
-                <button onclick="openResource('products')" class="bg-yellow-500 text-black px-6 py-3 rounded-xl font-black text-xs shadow-lg uppercase tracking-widest hover:bg-black hover:text-white transition-all">Post Ad — $49</button>
+                <button class="bg-yellow-500 text-black px-6 py-3 rounded-xl font-black text-xs shadow-lg uppercase tracking-widest hover:bg-black hover:text-white transition-all">Post Ad — $49</button>
             </div>
         </div>
     </nav>
@@ -80,7 +80,6 @@
             let html = "";
 
             jobs.forEach((job, index) => {
-                // ADD JOB CARD
                 html += `
                 <a href="${job.apply_link || job.link}" target="_blank" class="job-card p-10 rounded-[2.5rem]">
                     <div class="flex-grow">
@@ -95,19 +94,22 @@
                     </div>
                 </a>`;
 
-                // INJECT AMAZON AD EVERY 5 JOBS
+                // INJECT AD CARD EVERY 5 JOBS
                 if ((index + 1) % 5 === 0) {
                     html += `
                     <div class="ad-card p-10 rounded-[2.5rem] flex flex-col justify-between">
                         <div>
-                            <span class="text-[9px] font-black bg-yellow-500 text-black px-2 py-1 rounded-md uppercase tracking-widest mb-4 inline-block">Essential Gear</span>
+                            <div class="w-16 h-16 bg-yellow-500 rounded-2xl mb-8 flex items-center justify-center shadow-lg transform -rotate-3">
+                                <span class="text-3xl">🥾</span>
+                            </div>
+                            <span class="text-[9px] font-black bg-black text-white px-2 py-1 rounded-md uppercase tracking-widest mb-4 inline-block">Gear Spotlight</span>
                             <h3 class="text-2xl font-black uppercase title-straight mb-2 tracking-tight">Timberland PRO Endurance</h3>
                             <p class="text-[11px] font-bold text-slate-600 uppercase leading-relaxed">
-                                Rated #1 for Canadian logistics shifts. CSA Grade 1 steel toe with anti-fatigue technology for 12-hour concrete shifts.
+                                The #1 choice for Canadian logistics. Features anti-fatigue tech and CSA Grade 1 safety for 12-hour shifts.
                             </p>
                         </div>
                         <a href="https://amzn.to/3YOkD67" target="_blank" class="mt-10 w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest text-center hover:bg-yellow-500 hover:text-black transition-all">
-                            View on Amazon.ca ↗
+                            Shop on Amazon.ca ↗
                         </a>
                     </div>`;
                 }
