@@ -7,82 +7,57 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        :root { font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; min-h: 100vh; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .job-card { transition: all 0.2s ease; border: 1px solid #e2e8f0; border-radius: 1.5rem; background: white; padding: 1.5rem; }
+        .job-card:hover { transform: translateY(-3px); border-color: #facc15; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .ad-card { background: #fffbeb; border: 2px dashed #fcd34d; border-radius: 1.5rem; padding: 1.5rem; }
         
-        .job-card, .ad-card { 
-            display: flex; flex-direction: column; transition: all 0.25s ease; 
-            border: 1.5px solid #f1f5f9; background: white; border-radius: 2.5rem; padding: 2.5rem;
-        }
-        .job-card:hover { transform: translateY(-5px); border-color: #facc15; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
-        .ad-card { background: #fffbeb; border: 2px dashed #fcd34d; }
-        
-        .nav-logo { height: 45px; width: auto; }
-        .footer-logo { height: 50px; width: auto; filter: brightness(0) invert(1); }
-        .ad-image { width: 100%; height: 200px; object-fit: contain; margin-bottom: 1.5rem; background: white; border-radius: 1rem; }
-
-        .legal-view { display: none; background: white; border-radius: 2.5rem; padding: 4rem; margin-top: 2rem; border: 1px solid #e2e8f0; }
-        .active-legal { display: block; }
-        .description-text { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+        /* Modal Overlay Styles */
+        #login-modal { display: none; }
+        #login-modal.active { display: flex; }
     </style>
 </head>
-<body class="bg-[#F8FAFC] text-slate-900">
+<body class="bg-[#F8FAFC] text-slate-900 min-h-screen flex flex-col">
 
-    <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 py-4 sticky top-0 z-[100]">
+    <nav class="bg-white border-b border-slate-200 py-4 sticky top-0 z-[50]">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <img src="https://174hz.github.io/hardhathub/logo.png" alt="HardHatHub" class="nav-logo cursor-pointer" onclick="window.location.reload()">
-            <div class="flex items-center gap-6">
-                <button id="auth-btn" onclick="handleAuth()" class="text-xs font-bold uppercase tracking-widest hover:text-yellow-600">Login / Register</button>
-                <button class="bg-yellow-500 text-black px-6 py-3 rounded-xl font-black text-xs shadow-lg uppercase tracking-widest hover:bg-black hover:text-white transition-all">Post Ad</button>
+            <img src="https://174hz.github.io/hardhathub/logo.png" alt="HardHatHub" class="h-10 cursor-pointer" onclick="window.location.reload()">
+            <div class="flex items-center gap-4">
+                <button id="auth-btn" onclick="openModal()" class="text-xs font-bold uppercase tracking-widest hover:text-yellow-600">Login</button>
+                <button class="bg-yellow-500 text-black px-5 py-2.5 rounded-lg font-black text-xs uppercase tracking-widest hover:bg-black hover:text-white transition-all">Post Ad</button>
             </div>
         </div>
     </nav>
 
-    <main class="flex-grow max-w-7xl mx-auto px-4 py-16 w-full">
-        <div id="feed-container">
-            <h2 class="text-6xl font-black uppercase mb-12 tracking-tighter">Industrial <span class="text-yellow-500">Pipeline</span></h2>
-            <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-        </div>
-
-        <div id="legal-section" class="legal-view">
-            <button onclick="closeLegal()" class="mb-12 font-black text-xs uppercase text-slate-400">← Back to Feed</button>
-            <div id="legal-body" class="max-w-3xl mx-auto prose prose-slate"></div>
-        </div>
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-12 w-full">
+        <h2 class="text-5xl font-extrabold uppercase mb-10 tracking-tighter">Industrial <span class="text-yellow-500">Pipeline</span></h2>
+        <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 pt-20 pb-12 mt-20 border-t-8 border-yellow-500">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                <div>
-                    <img src="https://174hz.github.io/hardhathub/logo.png" alt="HardHatHub" class="footer-logo mb-6">
-                    <p class="text-[10px] font-bold uppercase opacity-50">Canada's verified industrial workforce engine.</p>
-                </div>
-                <div>
-                    <h4 class="text-white font-black uppercase text-[10px] mb-8">Corporate</h4>
-                    <ul class="space-y-4 text-[11px] font-bold uppercase">
-                        <li><button onclick="openLegal('terms')" class="hover:text-yellow-500 text-left">Terms of Use</button></li>
-                        <li><button onclick="openLegal('privacy')" class="hover:text-yellow-500 text-left">Privacy Policy</button></li>
-                        <li><button onclick="openLegal('security')" class="hover:text-yellow-500 text-left">Security Center</button></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-black uppercase text-[10px] mb-8">Employers</h4>
-                    <ul class="space-y-4 text-[11px] font-bold uppercase">
-                        <li><a href="#" class="hover:text-yellow-500">Post a Job</a></li>
-                        <li><a href="#" class="hover:text-yellow-500">Verification</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-black uppercase text-[10px] mb-8">Contact</h4>
-                    <p class="text-[11px] font-bold uppercase text-white">compliance@hardhathub.ca</p>
-                </div>
+    <div id="login-modal" class="fixed inset-0 z-[100] items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400 hover:text-black font-bold">✕</button>
+            
+            <div id="step-1">
+                <h3 class="text-2xl font-black uppercase mb-2">Enter the Hub</h3>
+                <p class="text-sm text-slate-500 mb-6 font-bold uppercase tracking-tight">Access the Canada Job Pipeline</p>
+                <input type="email" id="login-email" placeholder="work-email@address.com" class="w-full p-4 bg-slate-100 rounded-xl mb-4 border-2 border-transparent focus:border-yellow-500 outline-none font-bold">
+                <button onclick="sendCode()" class="w-full bg-black text-white py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-yellow-500 hover:text-black transition-all">Send Magic Link Code</button>
             </div>
-            <div class="pt-12 border-t border-white/10 text-center">
-                <p class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-4">© 2026 HARDHAT HUB CANADA</p>
-                <p class="text-[9px] italic opacity-30 uppercase">As an Amazon Associate, HardHatHub earns from qualifying purchases.</p>
+
+            <div id="step-2" class="hidden text-center">
+                <h3 class="text-2xl font-black uppercase mb-2 text-yellow-600">Check Email</h3>
+                <p class="text-sm text-slate-500 mb-6 font-bold uppercase">Enter the code sent to your inbox</p>
+                <input type="text" id="login-token" placeholder="000000" class="w-full p-4 bg-slate-100 rounded-xl mb-4 border-2 border-transparent focus:border-yellow-500 outline-none font-black text-center text-2xl tracking-[0.5em]">
+                <button onclick="verifyCode()" class="w-full bg-black text-white py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-yellow-600 transition-all">Verify & Enter</button>
+                <button onclick="resetModal()" class="mt-4 text-[10px] font-bold uppercase text-slate-400 hover:text-black">Try different email</button>
             </div>
         </div>
+    </div>
+
+    <footer class="bg-slate-900 text-white/50 py-12 mt-20 border-t-4 border-yellow-500 text-center">
+        <p class="text-[10px] font-black uppercase tracking-widest">© 2026 HARDHAT HUB CANADA</p>
     </footer>
 
     <script>
@@ -90,108 +65,63 @@
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        // Fetching Jobs from Supabase
+        // Modal Controls
+        function openModal() { document.getElementById('login-modal').classList.add('active'); }
+        function closeModal() { document.getElementById('login-modal').classList.remove('active'); resetModal(); }
+        function resetModal() {
+            document.getElementById('step-1').classList.remove('hidden');
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-token').value = '';
+        }
+
+        // Auth Logic
+        async function sendCode() {
+            const email = document.getElementById('login-email').value;
+            if(!email) return alert("Enter email");
+            
+            const { error } = await _supabase.auth.signInWithOtp({ email });
+            if (error) return alert(error.message);
+
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+        }
+
+        async function verifyCode() {
+            const email = document.getElementById('login-email').value;
+            const token = document.getElementById('login-token').value;
+            
+            const { error } = await _supabase.auth.verifyOtp({ email, token, type: 'magiclink' });
+            if (error) return alert("Invalid Code. Try again.");
+
+            alert("Login Success!");
+            location.reload();
+        }
+
+        // Job Fetching
         async function fetchJobs() {
             const { data } = await _supabase.from('jobs').select('*').order('created_at', { ascending: false });
-            if (data) renderJobs(data);
-        }
-
-        function renderJobs(jobs) {
-            const grid = document.getElementById('job-grid');
-            let html = "";
-            jobs.forEach((job, index) => {
-                // Job Bank Restored Details
-                html += `
-                <a href="${job.apply_link || job.link}" target="_blank" class="job-card">
-                    <div class="flex-grow">
-                        <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 inline-block">Verified Listing</span>
-                        <h3 class="text-2xl font-black uppercase mb-1 tracking-tight">${job.title}</h3>
-                        <p class="text-[12px] font-black text-yellow-600 uppercase mb-4">${job.company} • ${job.location || 'Ontario'}</p>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase leading-relaxed description-text">${job.description || 'View full shift details via portal.'}</p>
+            if (data) {
+                const grid = document.getElementById('job-grid');
+                grid.innerHTML = data.map(job => `
+                    <div class="job-card">
+                        <h3 class="text-xl font-black uppercase mb-1">${job.title}</h3>
+                        <p class="text-xs font-bold text-yellow-600 uppercase mb-3">${job.company} • ${job.location || 'Ontario'}</p>
+                        <p class="text-[11px] text-slate-500 font-medium mb-6 line-clamp-3">${job.description || 'Verified industrial shift listing.'}</p>
+                        <a href="${job.apply_link || job.link}" target="_blank" class="block w-full text-center bg-slate-900 text-white py-3 rounded-lg font-black uppercase text-[10px] tracking-widest hover:bg-yellow-500 hover:text-black transition-all">View Details</a>
                     </div>
-                </a>`;
-                
-                // Amazon Ad Slots (Every 5th Card)
-                if ((index + 1) % 5 === 0) {
-                    const isBoot = (index + 1) % 10 !== 0; 
-                    const gear = isBoot ? 
-                        { t: "Timberland PRO Endurance", i: "https://m.media-amazon.com/images/I/81P2hMv98nL._AC_SX679_.jpg", l: "https://amzn.to/3YOkD67" } : 
-                        { t: "Ergodyne ProFlex 1600", i: "https://m.media-amazon.com/images/I/71P4oDshIcL._AC_SX679_.jpg", l: "https://amzn.to/3LrtIyS" };
-
-                    html += `
-                    <div class="ad-card">
-                        <img src="${gear.i}" class="ad-image" alt="${gear.t}">
-                        <h3 class="text-2xl font-black uppercase mb-2 tracking-tight">${gear.t}</h3>
-                        <p class="text-[11px] font-bold text-slate-500 uppercase mb-6">Industrial Grade Safety</p>
-                        <a href="${gear.l}" target="_blank" class="mt-auto w-full bg-black text-white py-4 rounded-xl font-black uppercase text-[10px] text-center hover:bg-yellow-500 hover:text-black transition-all">Shop on Amazon ↗</a>
-                    </div>`;
-                }
-            });
-            grid.innerHTML = html;
-        }
-
-        // NO-404 LOGIN LOGIC (OTP METHOD)
-        async function handleAuth() {
-            const user = await _supabase.auth.getUser();
-            if (user.data.user) {
-                await _supabase.auth.signOut();
-                location.reload();
-                return;
-            }
-
-            const email = prompt("Enter email for your HardHatHub Magic Link code:");
-            if (!email) return;
-
-            const { error: sendError } = await _supabase.auth.signInWithOtp({ email });
-            if (sendError) {
-                alert("Error: " + sendError.message);
-                return;
-            }
-
-            const token = prompt("Code sent! Enter the 6-digit code from your email:");
-            if (!token) return;
-
-            const { error: verifyError } = await _supabase.auth.verifyOtp({
-                email,
-                token,
-                type: 'magiclink'
-            });
-
-            if (verifyError) {
-                alert("Login failed: " + verifyError.message);
-            } else {
-                alert("Logged in successfully!");
-                location.reload();
+                `).join('');
             }
         }
 
-        // Auth Listener to update button text
+        // Sync Login State
         _supabase.auth.onAuthStateChange((event, session) => {
             const btn = document.getElementById('auth-btn');
             if (session) {
-                btn.innerText = 'Logout (' + session.user.email.split('@')[0] + ')';
-            } else {
-                btn.innerText = 'Login / Register';
+                btn.innerText = 'Logout';
+                btn.onclick = async () => { await _supabase.auth.signOut(); location.reload(); };
             }
         });
-
-        // Legal Content Logic
-        const legalData = {
-            terms: `<h1 class="text-4xl font-black uppercase mb-6">Terms of Use</h1><p class="font-bold uppercase text-slate-500">HardHatHub is an aggregator. We do not assume liability for workplace safety or third-party hiring results.</p>`,
-            privacy: `<h1 class="text-4xl font-black uppercase mb-6">Privacy Policy</h1><p class="font-bold uppercase text-slate-500">PIPEDA Compliant. We only store data necessary for user authentication and shift verification.</p>`,
-            security: `<h1 class="text-4xl font-black uppercase mb-6">Security Center</h1><p class="font-bold uppercase text-slate-500">All authentication is handled via Supabase AES-256 encryption. We do not store passwords.</p>`
-        };
-
-        function openLegal(type) {
-            document.getElementById('feed-container').style.display = 'none';
-            document.getElementById('legal-section').classList.add('active-legal');
-            document.getElementById('legal-body').innerHTML = legalData[type];
-            window.scrollTo(0,0);
-        }
-        function closeLegal() {
-            document.getElementById('feed-container').style.display = 'block';
-            document.getElementById('legal-section').classList.remove('active-legal');
-        }
 
         window.onload = fetchJobs;
     </script>
