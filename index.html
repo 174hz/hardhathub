@@ -14,11 +14,11 @@
         .job-card:hover { border-color: #facc15; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
         .ad-card { background: #fffbeb; border: 4px dashed #fcd34d; border-radius: 1.5rem; padding: 1.5rem; text-align: center; }
         .ad-image { width: 100%; height: 140px; object-fit: contain; margin-bottom: 1rem; background: white; border-radius: 1rem; }
-        #login-modal { display: none; }
-        #login-modal.active { display: flex; }
+        #login-modal, #post-modal { display: none; }
+        #login-modal.active, #post-modal.active { display: flex; }
         .legal-view { display: none; background: white; border-radius: 2rem; padding: 3rem; margin-top: 1rem; border: 4px solid #000; }
         .active-legal { display: block; }
-        .footer-link { font-size: 13px; font-weight: 700; text-transform: uppercase; color: #94a3b8; text-align: left; transition: color 0.2s; }
+        .footer-link { font-size: 13px; font-weight: 700; text-transform: uppercase; color: #94a3b8; text-align: left; }
         .footer-link:hover { color: #facc15; }
         .footer-head { font-size: 14px; font-weight: 900; text-transform: uppercase; color: white; margin-bottom: 1.5rem; letter-spacing: 1px; }
     </style>
@@ -32,7 +32,7 @@
             </div>
             <div class="flex items-center gap-6">
                 <button id="auth-btn" class="text-xs font-black uppercase hover:text-yellow-600">Login / Join</button>
-                <button class="bg-yellow-500 text-black px-5 py-2 rounded-none border-[3px] border-black font-black text-xs uppercase hover:bg-black hover:text-white transition-all">Post Job</button>
+                <button onclick="openPostModal()" class="bg-yellow-500 text-black px-5 py-2 rounded-none border-[3px] border-black font-black text-xs uppercase hover:bg-black hover:text-white transition-all">Post Job</button>
             </div>
         </div>
     </nav>
@@ -40,12 +40,8 @@
     <header class="bg-black text-white py-10 px-4 border-b-8 border-yellow-500">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-left">
-                <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none">
-                    Looking for <span class="text-yellow-500 underline decoration-4">JOBS?</span>
-                </h1>
-                <p class="text-sm font-bold uppercase tracking-widest text-slate-400 mt-2">
-                    Warehouse Floor • PIT Operators • Logistics • Distribution
-                </p>
+                <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none">Looking for <span class="text-yellow-500 underline decoration-4">JOBS?</span></h1>
+                <p class="text-sm font-bold uppercase tracking-widest text-slate-400 mt-2">Warehouse Floor • PIT Operators • Logistics • Distribution</p>
             </div>
             <div class="text-center md:text-right border-l-0 md:border-l-4 border-yellow-500 md:pl-8">
                 <p class="text-lg font-black uppercase leading-tight">Employers hire here.<br>Workers find shifts. Period.</p>
@@ -57,21 +53,34 @@
         <div id="feed-container">
             <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
-
         <div id="legal-section" class="legal-view">
             <button onclick="closeLegal()" class="mb-8 font-black text-sm uppercase text-black underline tracking-tighter">← Back to Listings</button>
-            <div id="legal-body" class="max-w-4xl mx-auto prose prose-slate prose-strong:text-black prose-h2:uppercase prose-h2:font-black"></div>
+            <div id="legal-body" class="max-w-4xl mx-auto prose prose-slate"></div>
         </div>
     </main>
+
+    <div id="post-modal" class="fixed inset-0 z-[200] items-center justify-center p-4 bg-black/95 overflow-y-auto">
+        <div class="bg-white w-full max-w-xl p-10 border-8 border-yellow-500 relative">
+            <button onclick="closePostModal()" class="absolute top-4 right-4 font-black text-2xl">✕</button>
+            <h3 class="text-4xl font-black uppercase mb-6 tracking-tighter">Post Your <span class="text-yellow-500">Ad</span></h3>
+            <div class="space-y-4">
+                <input type="text" id="post-title" placeholder="JOB TITLE (E.G. PIT OPERATOR)" class="w-full p-4 bg-slate-100 border-4 border-black font-bold outline-none">
+                <input type="text" id="post-company" placeholder="COMPANY NAME" class="w-full p-4 bg-slate-100 border-4 border-black font-bold outline-none">
+                <input type="text" id="post-location" placeholder="LOCATION (E.G. BRAMPTON, ON)" class="w-full p-4 bg-slate-100 border-4 border-black font-bold outline-none">
+                <textarea id="post-desc" placeholder="JOB DESCRIPTION & REQUIREMENTS" class="w-full p-4 bg-slate-100 border-4 border-black font-bold outline-none h-32"></textarea>
+                <input type="text" id="post-link" placeholder="APPLICATION URL (LINK TO YOUR SITE)" class="w-full p-4 bg-slate-100 border-4 border-black font-bold outline-none">
+                <button onclick="submitJob()" class="w-full bg-black text-white py-5 font-black uppercase tracking-tighter hover:bg-yellow-500 hover:text-black">Submit Job Ad ($49 CAD)</button>
+            </div>
+        </div>
+    </div>
 
     <div id="login-modal" class="fixed inset-0 z-[200] items-center justify-center p-4 bg-black/90">
         <div class="bg-white w-full max-w-md p-10 border-8 border-yellow-500 relative">
             <button onclick="closeLogin()" class="absolute top-4 right-4 font-black text-2xl">✕</button>
             <div id="login-step-1">
                 <h3 class="text-4xl font-black uppercase mb-2 tracking-tighter">Get Alerts</h3>
-                <p class="text-xs font-bold text-slate-500 mb-8 uppercase">Join the pipeline for instant job notifications.</p>
                 <input type="email" id="login-email" placeholder="ENTER EMAIL" class="w-full p-5 bg-slate-100 mb-4 border-4 border-black outline-none font-bold uppercase">
-                <button onclick="sendCode()" class="w-full bg-black text-white py-5 font-black uppercase tracking-tighter hover:bg-yellow-500 hover:text-black">Send Code</button>
+                <button onclick="sendCode()" class="w-full bg-black text-white py-5 font-black uppercase tracking-tighter hover:bg-yellow-500">Send Code</button>
             </div>
             <div id="login-step-2" class="hidden text-center">
                 <h3 class="text-4xl font-black uppercase mb-6 tracking-tighter">Enter Code</h3>
@@ -110,10 +119,8 @@
                     <button class="footer-link">Your Privacy</button>
                 </div>
             </div>
-            
-            <div class="pt-12 border-t border-white/10 text-center">
-                <p class="text-[11px] font-black uppercase tracking-[0.3em] text-slate-500 mb-4">HH HARDHATHUB INDUSTRIAL CANADA © 2026</p>
-                <p class="text-[10px] font-bold text-slate-600 uppercase">HardHatHub participates in the Amazon Associates Program. Commissions help keep the pipeline free for workers.</p>
+            <div class="pt-12 border-t border-white/10 text-center text-[10px] font-bold text-slate-500 uppercase">
+                HH HARDHATHUB INDUSTRIAL CANADA © 2026
             </div>
         </div>
     </footer>
@@ -123,38 +130,36 @@
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        // MODAL & AUTH LOGIC
-        const authBtn = document.getElementById('auth-btn');
-
         function openLogin() { document.getElementById('login-modal').classList.add('active'); }
         function closeLogin() { document.getElementById('login-modal').classList.remove('active'); }
-        
+        function openPostModal() { document.getElementById('post-modal').classList.add('active'); }
+        function closePostModal() { document.getElementById('post-modal').classList.remove('active'); }
+
         async function sendCode() {
             const email = document.getElementById('login-email').value;
             const { error } = await _supabase.auth.signInWithOtp({ email });
-            if (!error) {
-                document.getElementById('login-step-1').classList.add('hidden');
-                document.getElementById('login-step-2').classList.remove('hidden');
-            } else { alert(error.message); }
+            if (!error) { document.getElementById('login-step-1').classList.add('hidden'); document.getElementById('login-step-2').classList.remove('hidden'); }
+            else { alert(error.message); }
         }
 
         async function verifyCode() {
             const email = document.getElementById('login-email').value;
             const token = document.getElementById('login-token').value;
             const { error } = await _supabase.auth.verifyOtp({ email, token, type: 'magiclink' });
-            if (!error) { location.reload(); } else { alert("Verification Failed."); }
+            if (!error) location.reload(); else alert("Error");
         }
 
-        async function handleAuthAction() {
-            const { data } = await _supabase.auth.getSession();
-            if (data.session) {
-                await _supabase.auth.signOut();
-                location.reload();
-            } else {
-                openLogin();
-            }
+        async function submitJob() {
+            const title = document.getElementById('post-title').value;
+            const company = document.getElementById('post-company').value;
+            const location = document.getElementById('post-location').value;
+            const description = document.getElementById('post-desc').value;
+            const apply_link = document.getElementById('post-link').value;
+
+            const { error } = await _supabase.from('jobs').insert([{ title, company, location, description, apply_link }]);
+            if (error) alert("Error: " + error.message);
+            else { alert("Job submitted! Redirecting to payment..."); closePostModal(); }
         }
-        authBtn.onclick = handleAuthAction;
 
         async function fetchJobs() {
             const { data } = await _supabase.from('jobs').select('*').order('created_at', { ascending: false });
@@ -162,52 +167,24 @@
                 const grid = document.getElementById('job-grid');
                 let html = "";
                 data.forEach((job, index) => {
-                    html += `
-                    <div class="job-card p-6 flex flex-col h-full border-black border-t-8">
-                        <h3 class="text-2xl font-black uppercase mb-1 tracking-tighter leading-tight">${job.title}</h3>
-                        <p class="text-[10px] font-black text-yellow-600 uppercase mb-4 tracking-widest">
-                            ${job.company} &nbsp;•&nbsp; ${job.location || 'Ontario'}
-                        </p>
-                        <p class="text-xs font-bold text-slate-500 mb-6 uppercase leading-tight line-clamp-3">${job.description || 'Verified Listing'}</p>
-                        <a href="${job.apply_link || job.link}" target="_blank" class="mt-auto w-full bg-black text-white py-3 font-black uppercase text-[10px] tracking-tighter text-center hover:bg-yellow-500 hover:text-black transition-all">Apply ↗</a>
+                    html += `<div class="job-card p-6 flex flex-col h-full border-black border-t-8">
+                        <h3 class="text-2xl font-black uppercase tracking-tighter leading-tight">${job.title}</h3>
+                        <p class="text-[10px] font-black text-yellow-600 uppercase mb-4 tracking-widest">${job.company} &nbsp;•&nbsp; ${job.location || 'Ontario'}</p>
+                        <p class="text-xs font-bold text-slate-500 mb-6 uppercase line-clamp-3">${job.description || 'Verified Listing'}</p>
+                        <a href="${job.apply_link || job.link}" target="_blank" class="mt-auto w-full bg-black text-white py-3 font-black uppercase text-[10px] text-center hover:bg-yellow-500 hover:text-black">Apply ↗</a>
                     </div>`;
-
                     if ((index + 1) % 5 === 0) {
-                        const isBoot = (index + 1) % 10 !== 0; 
-                        const gear = isBoot ? 
-                            { t: "Timberland PRO", i: "https://m.media-amazon.com/images/I/81P2hMv98nL._AC_SX679_.jpg", l: "https://amzn.to/3YOkD67" } : 
-                            { t: "Ergodyne 1600", i: "https://m.media-amazon.com/images/I/71P4oDshIcL._AC_SX679_.jpg", l: "https://amzn.to/3LrtIyS" };
-                        html += `
-                        <div class="ad-card">
-                            <img src="${gear.i}" class="ad-image" alt="${gear.t}">
-                            <h3 class="text-xl font-black uppercase mb-4">${gear.t}</h3>
-                            <a href="${gear.l}" target="_blank" class="w-full bg-yellow-500 text-black py-3 font-black uppercase text-[10px] border-2 border-black block">Amazon ↗</a>
-                        </div>`;
+                        html += `<div class="ad-card"><img src="https://m.media-amazon.com/images/I/81P2hMv98nL._AC_SX679_.jpg" class="ad-image"><h3 class="text-xl font-black uppercase mb-4">Safety Boots</h3><a href="https://amzn.to/3YOkD67" class="w-full bg-yellow-500 text-black py-3 font-black uppercase text-[10px] border-2 border-black block">Amazon ↗</a></div>`;
                     }
                 });
                 grid.innerHTML = html;
             }
         }
 
-        // PERMANENT LEGAL CONTENT
         const legalData = {
-            terms: `<h2>Terms of Use</h2>
-                    <p><strong>Last Updated: January 2026</strong></p>
-                    <p>Welcome to HardHatHub (the "Service"). By accessing or using our platform, you agree to be bound by these terms. HardHatHub is an industrial job aggregator that connects material handlers, PIT operators, and logistics professionals with third-party employers.</p>
-                    <p><strong>1. Services Provided:</strong> HardHatHub provides a searchable database of job listings. We are not an employer, headhunter, or staffing agency. We do not guarantee employment or the accuracy of third-party listings.</p>
-                    <p><strong>2. User Conduct:</strong> Users must provide accurate email information for authentication. Unauthorized use of the "Post Job" feature or automated scraping of our data is strictly prohibited.</p>
-                    <p><strong>3. Limitation of Liability:</strong> In no event shall HardHatHub be liable for any damages arising out of your use of the service or your employment with any third party found via this platform.</p>`,
-            
-            privacy: `<h2>Privacy Center - UPDATED!</h2>
-                    <p><strong>Your Privacy Matters.</strong> This policy explains how we collect and use your data to power the industrial pipeline.</p>
-                    <p><strong>Data Collection:</strong> We collect your email address exclusively for the purpose of secure authentication (Magic Link/OTP) and to send you verified job alerts. By logging in, you explicitly consent to receive these communications.</p>
-                    <p><strong>No Sale of Data:</strong> We do not sell, rent, or trade your personal information to third-party marketing companies. Your data is used strictly for platform functionality.</p>
-                    <p><strong>Cookies & Tracking:</strong> We use essential cookies to keep you logged in and to track affiliate performance for Amazon Associate links.</p>`,
-            
-            security: `<h2>Security Center</h2>
-                    <p><strong>Enterprise-Grade Protection:</strong> HardHatHub utilizes Supabase and AES-256 encryption to protect user sessions.</p>
-                    <p><strong>Passwordless Entry:</strong> We do not store passwords. Our system uses One-Time Passcodes (OTP) sent to your verified email, eliminating the risk of password breaches.</p>
-                    <p><strong>Secure Payments:</strong> All employer "Post Job" transactions are handled via encrypted third-party processors. We do not store credit card information on our servers.</p>`
+            terms: `<h2>Terms of Use</h2><p>HardHatHub connects logistics professionals with third-party employers. By using this service, you agree to our verification protocols.</p>`,
+            privacy: `<h2>Privacy Center - UPDATED!</h2><p>We use your email for secure OTP entry and job alerts. We never sell your personal data.</p>`,
+            security: `<h2>Security Center</h2><p>Powered by Supabase AES-256. Passwordless entry ensures no database of passwords exists to be breached.</p>`
         };
 
         function openLegal(type) {
@@ -216,17 +193,17 @@
             document.getElementById('legal-body').innerHTML = legalData[type];
             window.scrollTo(0,0);
         }
-        function closeLegal() {
-            document.getElementById('feed-container').style.display = 'block';
-            document.getElementById('legal-section').classList.remove('active-legal');
-        }
+        function closeLegal() { document.getElementById('feed-container').style.display = 'block'; document.getElementById('legal-section').classList.remove('active-legal'); }
+
+        const authBtn = document.getElementById('auth-btn');
+        authBtn.onclick = async () => {
+            const { data } = await _supabase.auth.getSession();
+            if (data.session) { await _supabase.auth.signOut(); location.reload(); }
+            else openLogin();
+        };
 
         _supabase.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                authBtn.innerText = 'LOGOUT';
-            } else {
-                authBtn.innerText = 'Login / Join';
-            }
+            authBtn.innerText = session ? 'LOGOUT' : 'Login / Join';
         });
 
         window.onload = fetchJobs;
