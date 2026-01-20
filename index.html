@@ -19,7 +19,7 @@
         .ad-card { background: #fffbeb; border: 2px dashed #fcd34d; }
         
         .nav-logo { height: 45px; width: auto; }
-        .footer-logo { height: 55px; width: auto; filter: brightness(0) invert(1); }
+        .ad-image { width: 100%; height: 180px; object-fit: contain; border-radius: 1rem; margin-bottom: 1.5rem; background: #fff; }
 
         .legal-view { display: none; background: white; border-radius: 2.5rem; padding: 4rem; margin-top: 2rem; border: 1px solid #e2e8f0; }
         .active-legal { display: block; }
@@ -30,10 +30,10 @@
 
     <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 py-4 sticky top-0 z-[100]">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <img src="YOUR_DIRECT_LOGO_URL_HERE" alt="HardHatHub" class="nav-logo cursor-pointer" onclick="window.location.reload()">
+            <img src="https://raw.githubusercontent.com/your-username/repo/main/logo.png" alt="HardHatHub" class="nav-logo cursor-pointer" onclick="window.location.reload()">
             <div class="flex items-center gap-6">
                 <button id="auth-btn" onclick="handleAuth()" class="text-xs font-bold uppercase tracking-widest hover:text-yellow-600">Login / Register</button>
-                <button class="bg-yellow-500 text-black px-6 py-3 rounded-xl font-black text-xs shadow-lg uppercase tracking-widest hover:bg-black hover:text-white transition-all">Post Ad — $49</button>
+                <button class="bg-yellow-500 text-black px-6 py-3 rounded-xl font-black text-xs shadow-lg uppercase tracking-widest">Post Ad</button>
             </div>
         </div>
     </nav>
@@ -45,43 +45,35 @@
         </div>
 
         <div id="legal-section" class="legal-view">
-            <button onclick="closeLegal()" class="mb-12 font-black text-xs uppercase text-slate-400">← Return to Pipeline</button>
-            <div id="legal-body" class="max-w-3xl mx-auto prose prose-slate">
-                </div>
+            <button onclick="closeLegal()" class="mb-12 font-black text-xs uppercase text-slate-400">← Back</button>
+            <div id="legal-body" class="max-w-3xl mx-auto prose prose-slate"></div>
         </div>
     </main>
 
-    <footer class="bg-gradient-to-b from-slate-900 to-black text-slate-400 pt-20 pb-12 mt-20 border-t-8 border-yellow-500">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                <div>
-                    <img src="YOUR_DIRECT_LOGO_URL_HERE" alt="HardHatHub" class="footer-logo mb-6">
-                    <p class="text-[10px] font-bold uppercase opacity-50 leading-relaxed">Canada's industrial workforce engine. Verified shifts & high-performance gear.</p>
-                </div>
+    <footer class="bg-slate-900 text-slate-400 pt-20 pb-12 mt-20 border-t-8 border-yellow-500">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 text-left">
                 <div>
                     <h4 class="text-white font-black uppercase text-[10px] mb-8">Corporate</h4>
                     <ul class="space-y-4 text-[11px] font-bold uppercase">
-                        <li><button onclick="openLegal('terms')" class="hover:text-yellow-500">Terms of Use</button></li>
-                        <li><button onclick="openLegal('privacy')" class="hover:text-yellow-500">Privacy Policy</button></li>
-                        <li><button onclick="openLegal('security')" class="hover:text-yellow-500">Security Center</button></li>
+                        <li><button onclick="openLegal('terms')">Terms of Use</button></li>
+                        <li><button onclick="openLegal('privacy')">Privacy Policy</button></li>
+                        <li><button onclick="openLegal('security')">Security Center</button></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-white font-black uppercase text-[10px] mb-8">For Employers</h4>
+                    <h4 class="text-white font-black uppercase text-[10px] mb-8">Resources</h4>
                     <ul class="space-y-4 text-[11px] font-bold uppercase">
-                        <li><a href="#" class="hover:text-yellow-500">Post a Job</a></li>
-                        <li><a href="#" class="hover:text-yellow-500">Verification</a></li>
+                        <li><a href="#">Employer Verification</a></li>
+                        <li><a href="#">Safety Standards</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-white font-black uppercase text-[10px] mb-8">Contact</h4>
-                    <p class="text-[11px] font-bold uppercase text-white">compliance@hardhathub.ca</p>
+                    <h4 class="text-white font-black uppercase text-[10px] mb-8">Legal</h4>
+                    <p class="text-[11px] font-bold uppercase">HardHatHub is PIPEDA compliant. AES-256 Encrypted.</p>
                 </div>
             </div>
-            <div class="pt-12 border-t border-white/10 text-center">
-                <p class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-6">© 2026 HARDHAT HUB CANADA</p>
-                <p class="text-[9px] italic opacity-40 uppercase max-w-xl mx-auto">Amazon Associate Notice: As an Amazon Associate, HardHatHub earns from qualifying purchases via the Amazon.ca Associates Program.</p>
-            </div>
+            <p class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600">© 2026 HARDHAT HUB CANADA</p>
         </div>
     </footer>
 
@@ -99,65 +91,52 @@
             const grid = document.getElementById('job-grid');
             let html = "";
             jobs.forEach((job, index) => {
-                // RESTORED: Full original data logic
+                // Job Card
                 html += `
                 <a href="${job.apply_link || job.link}" target="_blank" class="job-card">
-                    <div class="flex-grow">
-                        <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 inline-block">Verified Pipeline</span>
-                        <h3 class="text-2xl font-black uppercase mb-1 tracking-tight">${job.title}</h3>
-                        <p class="text-[12px] font-black text-yellow-600 uppercase mb-4">${job.company} • ${job.location || 'Ontario'}</p>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase leading-relaxed description-text">${job.description || 'Full industrial shift requirements available via portal.'}</p>
-                    </div>
-                    <div class="mt-8 pt-6 border-t border-slate-50 flex items-center justify-between text-[10px] font-black uppercase">
-                        <span class="text-slate-300 tracking-widest">Employer Portal</span><span class="text-black">↗</span>
-                    </div>
+                    <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 w-fit">Verified Listing</span>
+                    <h3 class="text-2xl font-black uppercase mb-1">${job.title}</h3>
+                    <p class="text-[12px] font-black text-yellow-600 uppercase mb-4">${job.company} • ${job.location || 'Ontario'}</p>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase leading-relaxed description-text">${job.description || 'View requirements via portal.'}</p>
                 </a>`;
                 
-                // HIGH REVENUE ROTATION
+                // Amazon Ad (Restored Photos & Cleaned Text)
                 if ((index + 1) % 5 === 0) {
                     const isBoot = (index + 1) % 10 !== 0; 
                     const gear = isBoot ? 
-                        { t: "Timberland PRO Endurance", d: "10% Commission Gear. CSA Safety.", l: "https://amzn.to/3YOkD67" } : 
-                        { t: "Ergodyne ProFlex 1600", d: "4% Commission Gear. Back Support.", l: "https://amzn.to/3LrtIyS" };
+                        { t: "Timberland PRO Endurance", i: "https://m.media-amazon.com/images/I/81P2hMv98nL._AC_SX679_.jpg", l: "https://amzn.to/3YOkD67" } : 
+                        { t: "Ergodyne ProFlex 1600", i: "https://m.media-amazon.com/images/I/71P4oDshIcL._AC_SX679_.jpg", l: "https://amzn.to/3LrtIyS" };
 
                     html += `
                     <div class="ad-card">
-                        <span class="text-[9px] font-black bg-black text-white px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 inline-block">Essential Gear</span>
-                        <h3 class="text-2xl font-black uppercase mb-2">${gear.t}</h3>
-                        <p class="text-[11px] font-bold text-slate-600 uppercase mb-8">${gear.d}</p>
-                        <a href="${gear.l}" target="_blank" class="mt-auto w-full bg-black text-white py-4 rounded-xl font-black uppercase text-[10px] text-center hover:bg-yellow-500 hover:text-black transition-all">Buy ↗</a>
+                        <img src="${gear.i}" class="ad-image" alt="${gear.t}">
+                        <h3 class="text-2xl font-black uppercase mb-4">${gear.t}</h3>
+                        <a href="${gear.l}" target="_blank" class="mt-auto w-full bg-black text-white py-4 rounded-xl font-black uppercase text-[10px] text-center">Buy on Amazon ↗</a>
                     </div>`;
                 }
             });
             grid.innerHTML = html;
         }
 
-        // RESTORED LEGAL DATABASE
         const legalData = {
-            terms: `<h1 class="text-4xl font-black uppercase mb-6">Terms of Use</h1><p class="font-bold uppercase text-slate-500">HardHatHub is an industrial job aggregator. We do not guarantee employment results or assume liability for third-party workplace safety.</p>`,
-            privacy: `<h1 class="text-4xl font-black uppercase mb-6">Privacy Policy</h1><p class="font-bold uppercase text-slate-500">PIPEDA Compliant. We do not sell personally identifiable information. We use secure cookies for affiliate attribution only.</p>`,
-            security: `<h1 class="text-4xl font-black uppercase mb-6">Security Center</h1><p class="font-bold uppercase text-slate-500">All data is encrypted via AES-256 standards. Our SOC monitors for unauthorized API access 24/7.</p>`
+            terms: "<h1>Terms of Use</h1><p>Verified Industrial Hub. 2026 Version.</p>",
+            privacy: "<h1>Privacy Policy</h1><p>PIPEDA Compliant. No third-party data sales.</p>",
+            security: "<h1>Security</h1><p>AES-256 encryption across all data pipelines.</p>"
         };
 
         function openLegal(type) {
             document.getElementById('feed-container').style.display = 'none';
             document.getElementById('legal-section').classList.add('active-legal');
             document.getElementById('legal-body').innerHTML = legalData[type];
-            window.scrollTo(0,0);
         }
         function closeLegal() {
             document.getElementById('feed-container').style.display = 'block';
             document.getElementById('legal-section').classList.remove('active-legal');
         }
 
-        // FREE SUPABASE MAGIC LINK AUTH
         async function handleAuth() {
-            const email = prompt("Enter email for a Free Magic Login Link:");
-            if (email) {
-                const { error } = await _supabase.auth.signInWithOtp({ email });
-                if (error) alert(error.message);
-                else alert("Check your email! Your login link has been sent.");
-            }
+            const email = prompt("Email for Magic Link:");
+            if (email) await _supabase.auth.signInWithOtp({ email });
         }
 
         window.onload = fetchJobs;
