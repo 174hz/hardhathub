@@ -12,7 +12,7 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         .title-straight { font-style: normal !important; letter-spacing: -0.04em; line-height: 0.95; }
         
-        /* High-Velocity Feed Cards */
+        /* Industrial Feed Styling */
         .job-card, .ad-card { 
             display: flex; flex-direction: column; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
             border: 1.5px solid #f1f5f9; background: white; text-decoration: none;
@@ -22,7 +22,7 @@
         .ad-card { background: #fffbeb; border: 2px dashed #fcd34d; }
         .description-text { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Professional Legal Overlay */
+        /* Enterprise Legal Overlay */
         .legal-view { display: none; background: white; border-radius: 3rem; padding: 5rem; margin-top: 2rem; border: 1px solid #e2e8f0; }
         .active-legal { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -44,22 +44,22 @@
         <div id="feed-container">
             <div class="mb-16">
                 <h2 class="text-7xl md:text-8xl font-black uppercase title-straight mb-10 tracking-tighter">Logistics<br><span class="text-yellow-500">Pipeline</span></h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 border-t border-slate-200 pt-12">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 border-t border-slate-200 pt-12 text-slate-500">
                     <div>
-                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-slate-400">01. Material Handlers</h4>
-                        <p class="text-[10px] font-bold uppercase leading-relaxed text-slate-500">Manual freight movement and dock sorting.</p>
+                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-black underline decoration-yellow-500 underline-offset-4">Material Handlers</h4>
+                        <p class="text-[10px] font-bold uppercase leading-relaxed">Freight sorting and heavy-lift dock operations.</p>
                     </div>
                     <div>
-                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-slate-400">02. PIT Operators</h4>
-                        <p class="text-[10px] font-bold uppercase leading-relaxed text-slate-500">Certified forklift and MHE operation.</p>
+                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-black underline decoration-yellow-500 underline-offset-4">PIT Operators</h4>
+                        <p class="text-[10px] font-bold uppercase leading-relaxed">Certified forklift and high-reach equipment.</p>
                     </div>
                     <div>
-                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-slate-400">03. Warehouse Ops</h4>
-                        <p class="text-[10px] font-bold uppercase leading-relaxed text-slate-500">Facility flow and safety compliance.</p>
+                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-black underline decoration-yellow-500 underline-offset-4">Warehouse Ops</h4>
+                        <p class="text-[10px] font-bold uppercase leading-relaxed">Inventory flow and industrial safety management.</p>
                     </div>
                     <div>
-                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-slate-400">04. Fulfillment</h4>
-                        <p class="text-[10px] font-bold uppercase leading-relaxed text-slate-500">High-velocity picking and shipping.</p>
+                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-black underline decoration-yellow-500 underline-offset-4">Fulfillment</h4>
+                        <p class="text-[10px] font-bold uppercase leading-relaxed">E-commerce picking and high-velocity shipping.</p>
                     </div>
                 </div>
             </div>
@@ -78,27 +78,26 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
                 <div class="col-span-1">
                     <h1 class="text-white text-2xl font-black tracking-tighter mb-6 uppercase italic">HH <span class="text-yellow-500">HUB</span></h1>
-                    <p class="text-[10px] font-bold uppercase leading-relaxed opacity-60">The proprietary workforce engine for Canada's industrial logistics sector. Verified shifts. Industrial gear.</p>
+                    <p class="text-[10px] font-bold uppercase leading-relaxed opacity-60">Canada's verified industrial workforce engine. Verified shifts. Industrial gear.</p>
                 </div>
                 <div>
-                    <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-8">Corporate Governance</h4>
+                    <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-8">Governance</h4>
                     <ul class="space-y-4 text-[11px] font-bold uppercase tracking-tight">
-                        <li><button onclick="openLegal('terms')" class="hover:text-yellow-500 transition-colors">Terms of Service</button></li>
-                        <li><button onclick="openLegal('privacy')" class="hover:text-yellow-500 transition-colors">Privacy & PIPEDA</button></li>
-                        <li><button onclick="openLegal('security')" class="hover:text-yellow-500 transition-colors">Security Architecture</button></li>
+                        <li><button onclick="openLegal('terms')" class="hover:text-yellow-500">Terms of Service</button></li>
+                        <li><button onclick="openLegal('privacy')" class="hover:text-yellow-500">Privacy & PIPEDA</button></li>
+                        <li><button onclick="openLegal('security')" class="hover:text-yellow-500">Security Architecture</button></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-8">Operations</h4>
                     <ul class="space-y-4 text-[11px] font-bold uppercase tracking-tight">
-                        <li><a href="#" class="hover:text-yellow-500">Listing Verification</a></li>
-                        <li><a href="#" class="hover:text-yellow-500">Brand Assets</a></li>
+                        <li><a href="#" class="hover:text-yellow-500">Verification Process</a></li>
+                        <li><a href="#" class="hover:text-yellow-500">Brand Kit</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-8">Inquiries</h4>
                     <p class="text-[11px] font-bold uppercase tracking-tight text-white mb-2">Legal: compliance@hardhathub.ca</p>
-                    <p class="text-[11px] font-bold uppercase tracking-tight text-white">Ops: support@hardhathub.ca</p>
                 </div>
             </div>
             
@@ -106,7 +105,7 @@
                 <p class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-8">© 2026 HARDHAT HUB CANADA | REGISTERED TRADEMARK</p>
                 <div class="max-w-3xl mx-auto p-8 bg-white/5 rounded-3xl border border-white/5">
                     <p class="text-[9px] italic opacity-50 leading-relaxed uppercase tracking-widest">
-                        Amazon Associate Disclosure: As an Amazon Associate, HardHatHub earns from qualifying purchases. This site facilitates industrial safety gear procurement through the Amazon.ca Associates Program. Commissions earned support the maintenance of this free job-aggregation utility.
+                        Amazon Associate Disclosure: As an Amazon Associate, HardHatHub earns from qualifying purchases. This platform earns commissions through the Amazon.ca Associates Program to maintain this free industrial resource.
                     </p>
                 </div>
             </div>
@@ -127,28 +126,42 @@
             const grid = document.getElementById('job-grid');
             let html = "";
             jobs.forEach((job, index) => {
+                // RESTORED PERTINENT DATA LOGIC
                 html += `
                 <a href="${job.apply_link || job.link}" target="_blank" class="job-card p-10 rounded-[3rem]">
                     <div class="flex-grow">
-                        <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 inline-block">Direct Pipeline</span>
+                        <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 inline-block">Verified Shift</span>
                         <h3 class="text-2xl font-black uppercase title-straight mb-1 tracking-tight">${job.title}</h3>
                         <p class="text-[12px] font-black text-yellow-600 uppercase tracking-widest mb-6">${job.company}</p>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase leading-relaxed description-text">${job.description || 'Verified industrial shift.'}</p>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase leading-relaxed description-text">${job.description || 'Access full industrial requirements and site location via employer portal.'}</p>
                     </div>
                     <div class="mt-10 pt-6 border-t border-slate-50 flex items-center justify-between font-black uppercase text-[10px] tracking-widest">
-                        <span class="text-slate-400">Employer Portal</span><span class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-sm shadow-xl">↗</span>
+                        <span class="text-slate-400">Portal Access</span><span class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-sm shadow-xl">↗</span>
                     </div>
                 </a>`;
                 
-                // Ergodyne Proflex 1600 Integrated Ad
+                // ROTATING GEAR LOGIC (Prioritizing high-commission boots)
                 if ((index + 1) % 5 === 0) {
+                    const isBoot = (index + 1) % 10 !== 0; // Boots every 5th, Ergodyne every 10th
+                    const adData = isBoot ? {
+                        title: "Timberland PRO Endurance",
+                        desc: "CSA Grade 1 safety with anti-fatigue tech. Built for 12-hour concrete shifts.",
+                        link: "https://amzn.to/3YOkD67",
+                        icon: "🥾"
+                    } : {
+                        title: "Ergodyne ProFlex 1600",
+                        desc: "Industrial-grade back support with suspenders. Essential for high-volume handling.",
+                        link: "https://amzn.to/3LrtIyS",
+                        icon: "🛠️"
+                    };
+
                     html += `
                     <div class="ad-card p-10 rounded-[3rem] flex flex-col justify-between">
-                        <div><div class="w-16 h-16 bg-yellow-500 rounded-2xl mb-8 flex items-center justify-center shadow-xl transform rotate-2"><span class="text-4xl">🛠️</span></div>
-                        <span class="text-[9px] font-black bg-black text-white px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 inline-block">Essential Gear</span>
-                        <h3 class="text-2xl font-black uppercase title-straight mb-2 tracking-tight">Ergodyne ProFlex 1600</h3>
-                        <p class="text-[11px] font-bold text-slate-600 uppercase leading-relaxed">Industrial-grade back support with suspenders. Essential for high-volume material handling shifts.</p></div>
-                        <a href="https://amzn.to/3LrtIyS" target="_blank" class="mt-10 w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] text-center hover:bg-yellow-500 hover:text-black transition-all shadow-lg">Buy on Amazon.ca ↗</a>
+                        <div><div class="w-16 h-16 bg-yellow-500 rounded-2xl mb-8 flex items-center justify-center shadow-xl transform rotate-2"><span class="text-4xl">${adData.icon}</span></div>
+                        <span class="text-[9px] font-black bg-black text-white px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 inline-block">Pipeline Essential</span>
+                        <h3 class="text-2xl font-black uppercase title-straight mb-2 tracking-tight">${adData.title}</h3>
+                        <p class="text-[11px] font-bold text-slate-600 uppercase leading-relaxed">${adData.desc}</p></div>
+                        <a href="${adData.link}" target="_blank" class="mt-10 w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] text-center hover:bg-yellow-500 hover:text-black transition-all shadow-lg">Shop Amazon.ca ↗</a>
                     </div>`;
                 }
             });
@@ -157,19 +170,11 @@
 
         const legalTexts = {
             terms: `<h1 class="text-4xl font-black uppercase mb-8">Universal Terms of Service</h1>
-                    <p class="mb-6 font-black text-yellow-600 tracking-widest uppercase text-xs">Proprietary Notice: HH-2026-V1</p>
-                    <h2 class="text-xl font-black uppercase mb-4 underline decoration-4 decoration-yellow-500">1. Limitation of Liability</h2>
-                    <p class="mb-8 leading-relaxed">HardHatHub operates exclusively as a curation and aggregation platform. Users agree that HardHatHub is not an employer, recruitment agency, or labor broker. We assume no liability for the outcome of employment applications, workplace safety incidents, or contractual disputes occurring at third-party job sites.</p>
-                    <h2 class="text-xl font-black uppercase mb-4 underline decoration-4 decoration-yellow-500">2. Affiliate Disclosure Enforcement</h2>
-                    <p class="mb-8">Users are advised that this platform utilizes the Amazon Associates Program. All "Essential Gear" links are commercial in nature. HardHatHub maintains strict editorial independence from its retail partners.</p>`,
-            privacy: `<h1 class="text-4xl font-black uppercase mb-8">Data Privacy & Governance</h1>
-                    <p class="mb-6 font-black text-yellow-600 tracking-widest uppercase text-xs">PIPEDA Compliant Framework</p>
-                    <h2 class="text-xl font-black uppercase mb-4 underline decoration-4 decoration-yellow-500 underline-offset-4">Privacy Standards</h2>
-                    <p class="mb-8">In accordance with the <strong>Personal Information Protection and Electronic Documents Act (PIPEDA)</strong>, HardHatHub employs rigorous data minimization protocols. We do not aggregate or sell PII (Personally Identifiable Information) to external lead-generation firms.</p>
-                    <h2 class="text-xl font-black uppercase mb-4 underline decoration-4 decoration-yellow-500 underline-offset-4">Cookie Architecture</h2>
-                    <p class="mb-8">This platform utilizes secure tracking cookies solely for the purpose of affiliate commission attribution and session management. By using the site, you consent to the deployment of these technical cookies as required for platform viability.</p>`,
+                    <p class="mb-8 leading-relaxed">HardHatHub operates exclusively as a curation and aggregation platform. By utilizing this service, you acknowledge that HardHatHub is not an employer, labor broker, or legal representative. We assume no liability for workplace safety, contractual disputes, or shift inaccuracies at third-party employer sites.</p>`,
+            privacy: `<h1 class="text-4xl font-black uppercase mb-8">Data Governance & PIPEDA</h1>
+                    <p class="mb-8">HardHatHub adheres strictly to the <strong>Personal Information Protection and Electronic Documents Act (PIPEDA)</strong>. We utilize enterprise-grade data minimization. We do not sell personally identifiable information to third-party marketing firms.</p>`,
             security: `<h1 class="text-4xl font-black uppercase mb-8">Security Architecture</h1>
-                    <p class="mb-8 font-black text-slate-500">HardHatHub infrastructure is built upon the Supabase Enterprise framework, utilizing <strong>AES-256 Bit Encryption</strong> for all data at rest and in transit. Our security operations center (SOC) monitors for unauthorized API handshake attempts 24/7, ensuring the integrity of the logistics pipeline.</p>`
+                    <p class="mb-8">Our infrastructure utilizes <strong>AES-256 Bit Encryption</strong> for all data handshakes. Security protocols are monitored 24/7 to ensure the integrity of the logistics pipeline.</p>`
         };
 
         function openLegal(type) {
@@ -187,3 +192,4 @@
     </script>
 </body>
 </html>
+     
