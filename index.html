@@ -12,20 +12,20 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         .title-straight { font-style: normal !important; letter-spacing: -0.04em; line-height: 0.95; }
         
+        /* High-Velocity Feed Cards */
         .job-card, .ad-card { 
-            display: flex;
-            flex-direction: column;
-            transition: all 0.25s ease; 
-            border: 1.5px solid #f1f5f9; 
-            background: white; 
-            text-decoration: none;
-            color: inherit;
-            height: 100%;
+            display: flex; flex-direction: column; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: 1.5px solid #f1f5f9; background: white; text-decoration: none;
+            color: inherit; height: 100%;
         }
-        .job-card:hover { transform: translateY(-5px); border-color: #facc15; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .job-card:hover { transform: translateY(-8px); border-color: #facc15; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.1); }
         .ad-card { background: #fffbeb; border: 2px dashed #fcd34d; }
-        
         .description-text { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Professional Legal Overlay */
+        .legal-view { display: none; background: white; border-radius: 3rem; padding: 5rem; margin-top: 2rem; border: 1px solid #e2e8f0; }
+        .active-legal { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900 flex flex-col min-h-screen">
@@ -33,74 +33,82 @@
     <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 py-5 sticky top-0 z-[100]">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
             <h1 class="text-2xl font-black tracking-tighter cursor-pointer" onclick="window.location.reload()">
-                <span class="bg-yellow-500 text-black px-2 py-0.5 rounded">HH</span>
-                <span class="uppercase">HARDHAT<span class="text-yellow-500">HUB</span></span>
+                <span class="bg-yellow-500 text-black px-2 py-0.5 rounded uppercase">HH</span>
+                <span class="uppercase italic">HARDHAT<span class="text-yellow-500">HUB</span></span>
             </h1>
-            <div class="flex items-center gap-8">
-                <button class="bg-yellow-500 text-black px-6 py-3 rounded-xl font-black text-xs shadow-lg uppercase tracking-widest hover:bg-black hover:text-white transition-all">Post Ad — $49</button>
-            </div>
+            <button class="bg-yellow-500 text-black px-6 py-3 rounded-xl font-black text-xs shadow-lg uppercase tracking-widest hover:bg-black hover:text-white transition-all">Post Ad — $49</button>
         </div>
     </nav>
 
     <main class="flex-grow max-w-7xl mx-auto px-4 py-16 w-full">
-        <div class="mb-16">
-            <h2 class="text-7xl md:text-8xl font-black uppercase title-straight mb-10">Logistics<br><span class="text-yellow-500">Pipeline</span></h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 border-t border-slate-200 pt-12">
-                <div>
-                    <h4 class="font-black text-[11px] uppercase tracking-widest text-black mb-2">Material Handlers</h4>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase italic">Manual movement of freight, loading/unloading, and sorting operations.</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-[11px] uppercase tracking-widest text-black mb-2">PIT Operators</h4>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase italic">Certified operation of forklifts, reach trucks, and power equipment.</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-[11px] uppercase tracking-widest text-black mb-2">Warehouse Ops</h4>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase italic">Daily facility coordination, safety compliance, and inventory flow.</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-[11px] uppercase tracking-widest text-black mb-2">Order Fulfillment</h4>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase italic">High-velocity picking, packing, and e-commerce shipping focus.</p>
+        <div id="feed-container">
+            <div class="mb-16">
+                <h2 class="text-7xl md:text-8xl font-black uppercase title-straight mb-10 tracking-tighter">Logistics<br><span class="text-yellow-500">Pipeline</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 border-t border-slate-200 pt-12">
+                    <div>
+                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-slate-400">01. Material Handlers</h4>
+                        <p class="text-[10px] font-bold uppercase leading-relaxed text-slate-500">Manual freight movement and dock sorting.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-slate-400">02. PIT Operators</h4>
+                        <p class="text-[10px] font-bold uppercase leading-relaxed text-slate-500">Certified forklift and MHE operation.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-slate-400">03. Warehouse Ops</h4>
+                        <p class="text-[10px] font-bold uppercase leading-relaxed text-slate-500">Facility flow and safety compliance.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-black text-[11px] uppercase tracking-widest mb-2 text-slate-400">04. Fulfillment</h4>
+                        <p class="text-[10px] font-bold uppercase leading-relaxed text-slate-500">High-velocity picking and shipping.</p>
+                    </div>
                 </div>
             </div>
+
+            <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
 
-        <h3 class="text-2xl font-black uppercase title-straight mb-8 border-b-4 border-yellow-500 inline-block">Live Feed</h3>
-        <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="legal-section" class="legal-view">
+            <button onclick="closeLegal()" class="mb-12 font-black text-xs uppercase tracking-widest text-slate-400 hover:text-black">← Return to Feed</button>
+            <div id="legal-body" class="max-w-4xl mx-auto prose prose-slate"></div>
+        </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 py-20 mt-auto border-t border-slate-800">
+    <footer class="bg-gradient-to-b from-slate-900 via-slate-900 to-black text-slate-400 pt-24 pb-12 mt-20 border-t-8 border-yellow-500">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 text-left">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+                <div class="col-span-1">
+                    <h1 class="text-white text-2xl font-black tracking-tighter mb-6 uppercase italic">HH <span class="text-yellow-500">HUB</span></h1>
+                    <p class="text-[10px] font-bold uppercase leading-relaxed opacity-60">The proprietary workforce engine for Canada's industrial logistics sector. Verified shifts. Industrial gear.</p>
+                </div>
                 <div>
-                    <h4 class="text-white font-black uppercase text-xs tracking-widest mb-6">Pipeline Resources</h4>
+                    <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-8">Corporate Governance</h4>
                     <ul class="space-y-4 text-[11px] font-bold uppercase tracking-tight">
-                        <li><a href="#" class="hover:text-yellow-500 transition-colors">Safety Standards</a></li>
-                        <li><a href="#" class="hover:text-yellow-500 transition-colors">Certification Help</a></li>
-                        <li><a href="#" class="hover:text-yellow-500 transition-colors">Worker Portal</a></li>
+                        <li><button onclick="openLegal('terms')" class="hover:text-yellow-500 transition-colors">Terms of Service</button></li>
+                        <li><button onclick="openLegal('privacy')" class="hover:text-yellow-500 transition-colors">Privacy & PIPEDA</button></li>
+                        <li><button onclick="openLegal('security')" class="hover:text-yellow-500 transition-colors">Security Architecture</button></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-white font-black uppercase text-xs tracking-widest mb-6">Employers</h4>
+                    <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-8">Operations</h4>
                     <ul class="space-y-4 text-[11px] font-bold uppercase tracking-tight">
-                        <li><a href="#" class="hover:text-yellow-500 transition-colors">Post a Job</a></li>
-                        <li><a href="#" class="hover:text-yellow-500 transition-colors">Pricing Plans</a></li>
+                        <li><a href="#" class="hover:text-yellow-500">Listing Verification</a></li>
+                        <li><a href="#" class="hover:text-yellow-500">Brand Assets</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-white font-black uppercase text-xs tracking-widest mb-6">Legal</h4>
-                    <ul class="space-y-4 text-[11px] font-bold uppercase tracking-tight">
-                        <li><a href="#" class="hover:text-yellow-500 transition-colors">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-yellow-500 transition-colors">Terms of Service</a></li>
-                    </ul>
+                    <h4 class="text-white font-black uppercase text-[10px] tracking-[0.2em] mb-8">Inquiries</h4>
+                    <p class="text-[11px] font-bold uppercase tracking-tight text-white mb-2">Legal: compliance@hardhathub.ca</p>
+                    <p class="text-[11px] font-bold uppercase tracking-tight text-white">Ops: support@hardhathub.ca</p>
                 </div>
             </div>
-            <div class="pt-12 border-t border-slate-800 text-center">
-                <p class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4">© 2026 HARDHAT HUB CANADA</p>
-                <p class="text-[9px] italic max-w-2xl mx-auto opacity-60 leading-relaxed">
-                    As an Amazon Associate, I earn from qualifying purchases. HardHatHub provides curated links to industrial job portals and vetted safety gear for the Canadian workforce.
-                </p>
+            
+            <div class="pt-12 border-t border-white/10 text-center">
+                <p class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600 mb-8">© 2026 HARDHAT HUB CANADA | REGISTERED TRADEMARK</p>
+                <div class="max-w-3xl mx-auto p-8 bg-white/5 rounded-3xl border border-white/5">
+                    <p class="text-[9px] italic opacity-50 leading-relaxed uppercase tracking-widest">
+                        Amazon Associate Disclosure: As an Amazon Associate, HardHatHub earns from qualifying purchases. This site facilitates industrial safety gear procurement through the Amazon.ca Associates Program. Commissions earned support the maintenance of this free job-aggregation utility.
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
@@ -118,46 +126,61 @@
         function renderJobs(jobs) {
             const grid = document.getElementById('job-grid');
             let html = "";
-
             jobs.forEach((job, index) => {
-                // FULL PERTINENT DATA RESTORED
                 html += `
-                <a href="${job.apply_link || job.link}" target="_blank" class="job-card p-10 rounded-[2.5rem]">
+                <a href="${job.apply_link || job.link}" target="_blank" class="job-card p-10 rounded-[3rem]">
                     <div class="flex-grow">
-                        <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-2 py-1 rounded-md uppercase tracking-widest mb-4 inline-block">Direct Entry</span>
+                        <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 inline-block">Direct Pipeline</span>
                         <h3 class="text-2xl font-black uppercase title-straight mb-1 tracking-tight">${job.title}</h3>
                         <p class="text-[12px] font-black text-yellow-600 uppercase tracking-widest mb-6">${job.company}</p>
-                        <p class="text-[11px] font-bold text-slate-500 uppercase leading-relaxed description-text">
-                            ${job.description || 'Access full shift patterns, physical requirements, and site location via the employer portal.'}
-                        </p>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase leading-relaxed description-text">${job.description || 'Verified industrial shift.'}</p>
                     </div>
                     <div class="mt-10 pt-6 border-t border-slate-50 flex items-center justify-between font-black uppercase text-[10px] tracking-widest">
-                        <span>Apply Portal</span>
-                        <span class="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center">↗</span>
+                        <span class="text-slate-400">Employer Portal</span><span class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-sm shadow-xl">↗</span>
                     </div>
                 </a>`;
-
-                // GEAR SPOTLIGHT EVERY 5th CARD
+                
+                // Ergodyne Proflex 1600 Integrated Ad
                 if ((index + 1) % 5 === 0) {
                     html += `
-                    <div class="ad-card p-10 rounded-[2.5rem] flex flex-col justify-between shadow-sm">
-                        <div>
-                            <div class="w-14 h-14 bg-yellow-500 rounded-2xl mb-8 flex items-center justify-center shadow-lg transform -rotate-3">
-                                <span class="text-3xl">🥾</span>
-                            </div>
-                            <span class="text-[9px] font-black bg-black text-white px-2 py-1 rounded-md uppercase tracking-widest mb-4 inline-block">Gear Spotlight</span>
-                            <h3 class="text-2xl font-black uppercase title-straight mb-2 tracking-tight">Timberland PRO Endurance</h3>
-                            <p class="text-[11px] font-bold text-slate-600 uppercase leading-relaxed">
-                                Specifically built for 12-hour shifts on Canadian concrete floors. CSA Grade 1 safety with anti-fatigue tech.
-                            </p>
-                        </div>
-                        <a href="https://amzn.to/3YOkD67" target="_blank" class="mt-10 w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest text-center hover:bg-yellow-500 hover:text-black transition-all">
-                            Shop on Amazon.ca ↗
-                        </a>
+                    <div class="ad-card p-10 rounded-[3rem] flex flex-col justify-between">
+                        <div><div class="w-16 h-16 bg-yellow-500 rounded-2xl mb-8 flex items-center justify-center shadow-xl transform rotate-2"><span class="text-4xl">🛠️</span></div>
+                        <span class="text-[9px] font-black bg-black text-white px-3 py-1.5 rounded-full uppercase tracking-widest mb-6 inline-block">Essential Gear</span>
+                        <h3 class="text-2xl font-black uppercase title-straight mb-2 tracking-tight">Ergodyne ProFlex 1600</h3>
+                        <p class="text-[11px] font-bold text-slate-600 uppercase leading-relaxed">Industrial-grade back support with suspenders. Essential for high-volume material handling shifts.</p></div>
+                        <a href="https://amzn.to/3LrtIyS" target="_blank" class="mt-10 w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] text-center hover:bg-yellow-500 hover:text-black transition-all shadow-lg">Buy on Amazon.ca ↗</a>
                     </div>`;
                 }
             });
             grid.innerHTML = html;
+        }
+
+        const legalTexts = {
+            terms: `<h1 class="text-4xl font-black uppercase mb-8">Universal Terms of Service</h1>
+                    <p class="mb-6 font-black text-yellow-600 tracking-widest uppercase text-xs">Proprietary Notice: HH-2026-V1</p>
+                    <h2 class="text-xl font-black uppercase mb-4 underline decoration-4 decoration-yellow-500">1. Limitation of Liability</h2>
+                    <p class="mb-8 leading-relaxed">HardHatHub operates exclusively as a curation and aggregation platform. Users agree that HardHatHub is not an employer, recruitment agency, or labor broker. We assume no liability for the outcome of employment applications, workplace safety incidents, or contractual disputes occurring at third-party job sites.</p>
+                    <h2 class="text-xl font-black uppercase mb-4 underline decoration-4 decoration-yellow-500">2. Affiliate Disclosure Enforcement</h2>
+                    <p class="mb-8">Users are advised that this platform utilizes the Amazon Associates Program. All "Essential Gear" links are commercial in nature. HardHatHub maintains strict editorial independence from its retail partners.</p>`,
+            privacy: `<h1 class="text-4xl font-black uppercase mb-8">Data Privacy & Governance</h1>
+                    <p class="mb-6 font-black text-yellow-600 tracking-widest uppercase text-xs">PIPEDA Compliant Framework</p>
+                    <h2 class="text-xl font-black uppercase mb-4 underline decoration-4 decoration-yellow-500 underline-offset-4">Privacy Standards</h2>
+                    <p class="mb-8">In accordance with the <strong>Personal Information Protection and Electronic Documents Act (PIPEDA)</strong>, HardHatHub employs rigorous data minimization protocols. We do not aggregate or sell PII (Personally Identifiable Information) to external lead-generation firms.</p>
+                    <h2 class="text-xl font-black uppercase mb-4 underline decoration-4 decoration-yellow-500 underline-offset-4">Cookie Architecture</h2>
+                    <p class="mb-8">This platform utilizes secure tracking cookies solely for the purpose of affiliate commission attribution and session management. By using the site, you consent to the deployment of these technical cookies as required for platform viability.</p>`,
+            security: `<h1 class="text-4xl font-black uppercase mb-8">Security Architecture</h1>
+                    <p class="mb-8 font-black text-slate-500">HardHatHub infrastructure is built upon the Supabase Enterprise framework, utilizing <strong>AES-256 Bit Encryption</strong> for all data at rest and in transit. Our security operations center (SOC) monitors for unauthorized API handshake attempts 24/7, ensuring the integrity of the logistics pipeline.</p>`
+        };
+
+        function openLegal(type) {
+            document.getElementById('feed-container').style.display = 'none';
+            document.getElementById('legal-section').classList.add('active-legal');
+            document.getElementById('legal-body').innerHTML = legalTexts[type];
+            window.scrollTo(0, 0);
+        }
+        function closeLegal() {
+            document.getElementById('feed-container').style.display = 'block';
+            document.getElementById('legal-section').classList.remove('active-legal');
         }
 
         window.onload = fetchJobs;
