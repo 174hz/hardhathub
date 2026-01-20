@@ -12,8 +12,7 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         .title-straight { font-style: normal !important; letter-spacing: -0.04em; line-height: 0.95; }
         
-        /* Direct Link Cards */
-        .job-card { 
+        .job-card, .ad-card { 
             display: flex;
             flex-direction: column;
             transition: all 0.25s ease; 
@@ -23,23 +22,10 @@
             color: inherit;
             height: 100%;
         }
-        .job-card:hover { 
-            transform: translateY(-5px); 
-            border-color: #facc15; 
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); 
-        }
+        .job-card:hover { transform: translateY(-5px); border-color: #facc15; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .ad-card { background: #fffbeb; border: 2px dashed #fcd34d; }
         
-        .footer-gradient { background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); }
-        .input-field { width: 100%; padding: 1.25rem; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 1rem; font-weight: 800; text-transform: uppercase; font-size: 0.7rem; }
-        
-        /* Ensures description text doesn't overflow or look messy */
-        .description-text {
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .description-text { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-slate-900 flex flex-col min-h-screen">
@@ -51,7 +37,6 @@
                 <span class="uppercase">HARDHAT<span class="text-yellow-500">HUB</span></span>
             </h1>
             <div class="flex items-center gap-8">
-                <button onclick="openWorkerPortal()" class="text-xs font-black uppercase tracking-widest text-slate-500 hover:text-black transition-all">Worker Portal</button>
                 <button onclick="openResource('products')" class="bg-yellow-500 text-black px-6 py-3 rounded-xl font-black text-xs shadow-lg uppercase tracking-widest hover:bg-black hover:text-white transition-all">Post Ad — $49</button>
             </div>
         </div>
@@ -60,163 +45,76 @@
     <main class="flex-grow max-w-7xl mx-auto px-4 py-16 w-full">
         <div class="mb-16">
             <h2 class="text-7xl md:text-8xl font-black uppercase title-straight mb-10">Logistics<br><span class="text-yellow-500">Pipeline</span></h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-12 border-t border-slate-200 pt-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 border-t border-slate-200 pt-12">
                 <div>
-                    <h4 class="font-black text-[11px] uppercase tracking-widest text-black mb-2">Material Handlers / Movers</h4>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase leading-relaxed italic">Moving products by hand or equipment.</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-[11px] uppercase tracking-widest text-black mb-2">Warehouse Operations</h4>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase leading-relaxed italic">Daily facility sorting and activity.</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-[11px] uppercase tracking-widest text-black mb-2">PIT Operators</h4>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase leading-relaxed italic">Forklift and heavy machinery specialists.</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-[11px] uppercase tracking-widest text-black mb-2">Order Fulfillment</h4>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase leading-relaxed italic">Picking, packing, and sorting focus.</p>
+                    <h4 class="font-black text-[11px] uppercase tracking-widest text-black mb-2">Verified Gear</h4>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase italic">Essential tools for the Canadian shift.</p>
                 </div>
             </div>
         </div>
 
         <h3 class="text-2xl font-black uppercase title-straight mb-8 border-b-4 border-yellow-500 inline-block">Live Feed</h3>
+        
         <div id="job-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
-    <footer class="footer-gradient text-slate-300 py-24 border-t border-slate-800 mt-auto">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mb-20">
-                <div>
-                    <h4 class="text-white font-black uppercase text-sm tracking-[0.2em] mb-8 border-b border-slate-700 pb-4">For Job Seekers</h4>
-                    <ul class="space-y-5 text-[12px] font-extrabold uppercase tracking-widest">
-                        <li><button onclick="openResource('howItWorks')" class="hover:text-yellow-500 text-left">How It Works</button></li>
-                        <li><button onclick="openResource('careerAdvice')" class="hover:text-yellow-500 text-left">Career Advice</button></li>
-                        <li><button onclick="openResource('mission')" class="hover:text-yellow-500 text-left">Our Mission</button></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-black uppercase text-sm tracking-[0.2em] mb-8 border-b border-slate-700 pb-4">For Employers</h4>
-                    <ul class="space-y-5 text-[12px] font-extrabold uppercase tracking-widest">
-                        <li><button onclick="openResource('products')" class="hover:text-yellow-500 text-left">Products & Pricing</button></li>
-                        <li><button onclick="openResource('bestPractices')" class="hover:text-yellow-500 text-left">Employer Resources</button></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-black uppercase text-sm tracking-[0.2em] mb-8 border-b border-slate-700 pb-4">Legal & Choices</h4>
-                    <ul class="space-y-5 text-[12px] font-extrabold uppercase tracking-widest">
-                        <li><button onclick="openLegal('terms')" class="hover:text-yellow-500 text-left">Terms of Use</button></li>
-                        <li><button onclick="openLegal('privacy')" class="hover:text-yellow-500 text-left">Privacy Center</button></li>
-                        <li><button onclick="openLegal('security')" class="hover:text-yellow-500 text-left">Security Center</button></li>
-                    </ul>
-                </div>
-            </div>
-            <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] text-center pt-10 border-t border-slate-800">© 2026 HARDHAT HUB CANADA | INDUSTRIAL WORKFORCE AGGREGATOR</p>
+    <footer class="bg-slate-900 text-slate-300 py-16 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-[10px] font-black uppercase tracking-[0.5em] mb-4">© 2026 HARDHAT HUB CANADA</p>
+            <p class="text-[9px] text-slate-500 italic">As an Amazon Associate, I earn from qualifying purchases. All gear recommendations are vetted for industrial safety standards.</p>
         </div>
     </footer>
 
-    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-[300] hidden flex items-center justify-center p-4" onclick="handleOverlayClick(event)">
-        <div id="modal-container" class="bg-white w-full max-w-2xl rounded-[3rem] p-10 relative shadow-2xl">
-            <button onclick="closeModal()" class="absolute top-10 right-10 text-3xl text-slate-300 hover:text-black">&times;</button>
-            <div id="modal-content" class="max-h-[75vh] overflow-y-auto pr-4 font-bold text-slate-600 uppercase text-[11px] leading-relaxed"></div>
-        </div>
-    </div>
-
     <script>
-        // SUPABASE CONFIG
         const SB_URL = "https://oakwbsqdcljxckfmjyva.supabase.co"; 
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        // CLEANING ENGINE
-        function cleanText(text) {
-            if (!text) return "";
-            return text.replace(/indeed\.com/gi, " Indeed.com ").replace(/new([a-z])/gi, "New $1").replace(/\s\s+/g, ' ').trim();
-        }
-
-        // PROTOCOL VALIDATOR (Prevents "undefined" and broken links)
-        function formatUrl(url) {
-            if (!url || url === "undefined") return "#";
-            let cleanUrl = url.trim();
-            if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = 'https://' + cleanUrl;
-            return cleanUrl;
-        }
-
         async function fetchJobs() {
-            const { data, error } = await _supabase.from('jobs').select('*').order('created_at', { ascending: false });
+            const { data } = await _supabase.from('jobs').select('*').order('created_at', { ascending: false });
             if (data) renderJobs(data);
         }
 
         function renderJobs(jobs) {
             const grid = document.getElementById('job-grid');
-            grid.innerHTML = jobs.map(job => {
-                // Determine the correct link from your database columns
-                const rawLink = job.apply_link || job.link || "#";
-                const destination = formatUrl(rawLink);
+            let html = "";
 
-                return `
-                <a href="${destination}" target="_blank" rel="noopener noreferrer" class="job-card p-10 rounded-[2.5rem]">
+            jobs.forEach((job, index) => {
+                // ADD JOB CARD
+                html += `
+                <a href="${job.apply_link || job.link}" target="_blank" class="job-card p-10 rounded-[2.5rem]">
                     <div class="flex-grow">
-                        <span class="text-[9px] font-black bg-yellow-500 text-black px-2 py-1 rounded-md uppercase tracking-widest mb-4 inline-block shadow-sm">Verified Link</span>
-                        
-                        <h3 class="text-2xl font-black uppercase title-straight mb-2 tracking-tight">${cleanText(job.title)}</h3>
-                        
-                        <div class="flex flex-col gap-1 mb-6">
-                             <p class="text-[12px] font-black text-slate-800 uppercase tracking-widest">${cleanText(job.company)}</p>
-                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">${job.location || 'Ontario, CA'}</p>
-                        </div>
-
-                        <p class="text-[11px] font-bold text-slate-500 uppercase leading-relaxed description-text">
-                            ${job.description || 'Detailed shift information, requirements, and facility overview available on employer site.'}
-                        </p>
+                        <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-2 py-1 rounded-md uppercase tracking-widest mb-4 inline-block">Job Listing</span>
+                        <h3 class="text-2xl font-black uppercase title-straight mb-2 tracking-tight">${job.title}</h3>
+                        <p class="text-[12px] font-black text-slate-800 uppercase tracking-widest mb-6">${job.company}</p>
+                        <p class="text-[11px] font-bold text-slate-500 uppercase leading-relaxed description-text">${job.description || ''}</p>
                     </div>
-
-                    <div class="mt-10 pt-6 border-t border-slate-50 flex items-center justify-between font-black uppercase text-[10px] tracking-widest text-black">
-                        <span>Apply on External Site</span>
+                    <div class="mt-10 pt-6 border-t border-slate-50 flex items-center justify-between font-black uppercase text-[10px] tracking-widest">
+                        <span>Apply Portal</span>
                         <span class="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center">↗</span>
                     </div>
                 </a>`;
-            }).join('');
+
+                // INJECT AMAZON AD EVERY 5 JOBS
+                if ((index + 1) % 5 === 0) {
+                    html += `
+                    <div class="ad-card p-10 rounded-[2.5rem] flex flex-col justify-between">
+                        <div>
+                            <span class="text-[9px] font-black bg-yellow-500 text-black px-2 py-1 rounded-md uppercase tracking-widest mb-4 inline-block">Essential Gear</span>
+                            <h3 class="text-2xl font-black uppercase title-straight mb-2 tracking-tight">Timberland PRO Endurance</h3>
+                            <p class="text-[11px] font-bold text-slate-600 uppercase leading-relaxed">
+                                Rated #1 for Canadian logistics shifts. CSA Grade 1 steel toe with anti-fatigue technology for 12-hour concrete shifts.
+                            </p>
+                        </div>
+                        <a href="https://amzn.to/3YOkD67" target="_blank" class="mt-10 w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-[10px] tracking-widest text-center hover:bg-yellow-500 hover:text-black transition-all">
+                            View on Amazon.ca ↗
+                        </a>
+                    </div>`;
+                }
+            });
+            grid.innerHTML = html;
         }
 
-        // MODAL RESOURCES
-        function openResource(type) {
-            const res = {
-                howItWorks: { t: "How It Works", c: "HardHatHub is an industrial workforce aggregator. We consolidate high-intent Logistics and Material Handling roles into a single direct-access pipeline. Click any listing to be bridged directly to the employer's official portal." },
-                careerAdvice: { t: "Career Advice", c: "1. Update PIT certifications. 2. Highlight reliability metrics. 3. Monitor the pipeline daily." },
-                mission: { t: "Our Mission", c: "To empower logistics and material handling professionals by connecting them with great employers and vice versa." },
-                products: { t: "Products & Pricing", c: "SINGLE AD BOOST ($49): Features your listing at the top of the feed.\n\nMONTHLY PLAN ($99): Unlimited visibility for industrial recruiters." },
-                bestPractices: { t: "Employer Resources", c: "Ensure your destination URLs are mobile-optimized to maximize conversion of high-intent candidates." }
-            };
-            const item = res[type];
-            document.getElementById('modal-content').innerHTML = `<h2 class="text-3xl font-black uppercase mb-6 text-black">${item.t}</h2>${item.c}`;
-            document.getElementById('modal-overlay').classList.remove('hidden');
-        }
-
-        function openLegal(type) {
-            const titles = { terms: 'Terms of Use', privacy: 'Privacy Center', security: 'Security Center' };
-            document.getElementById('modal-content').innerHTML = `
-                <h2 class="text-3xl font-black uppercase mb-6 text-black">${titles[type]}</h2>
-                <div class="space-y-4">
-                    <p class="text-black border-l-4 border-yellow-500 pl-4 bg-slate-50 py-3 font-black">PURE AGGREGATOR NOTICE: HARDHAT HUB PROVIDES LINKS TO EXTERNAL SITES BUT TAKES NO RESPONSIBILITY FOR THEIR CONTENT OR THE OUTCOME OF APPLICATIONS.</p>
-                    <p>By using this site, you agree to hold HardHatHub harmless from any liability related to employment disputes or site security on third-party domains.</p>
-                </div>`;
-            document.getElementById('modal-overlay').classList.remove('hidden');
-        }
-
-        function openWorkerPortal() {
-            document.getElementById('modal-content').innerHTML = `
-                <h2 class="text-3xl font-black uppercase mb-4 text-black">Worker Portal</h2>
-                <form onsubmit="event.preventDefault(); alert('Success'); closeModal();" class="space-y-4">
-                    <input type="email" placeholder="Email Address" class="input-field" required>
-                    <button class="w-full bg-black text-white py-6 rounded-3xl font-black uppercase text-xs">Join Pipeline</button>
-                </form>`;
-            document.getElementById('modal-overlay').classList.remove('hidden');
-        }
-
-        function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
-        function handleOverlayClick(e) { if (e.target.id === 'modal-overlay') closeModal(); }
         window.onload = fetchJobs;
     </script>
 </body>
