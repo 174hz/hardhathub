@@ -60,7 +60,7 @@
 
         <div id="legal-section" class="legal-view">
             <button onclick="closeLegal()" class="mb-8 font-black text-sm uppercase text-black underline tracking-tighter">← Back to Listings</button>
-            <div id="legal-body" class="max-w-4xl mx-auto prose prose-slate prose-strong:text-black prose-h2:uppercase prose-h2:font-black"></div>
+            <div id="legal-body" class="max-w-4xl mx-auto prose prose-slate"></div>
         </div>
     </main>
 
@@ -69,6 +69,7 @@
             <button onclick="closePostModal()" class="absolute top-4 right-4 font-black text-2xl">✕</button>
             <h3 class="text-4xl font-black uppercase mb-6 tracking-tighter text-black">Post Your <span class="text-yellow-500">Ad</span></h3>
             <div class="space-y-4">
+                <input type="email" id="post-employer-email" placeholder="YOUR EMAIL (FOR RECEIPT)" class="w-full p-4 bg-slate-100 border-4 border-black font-bold outline-none uppercase">
                 <input type="text" id="post-title" placeholder="JOB TITLE" class="w-full p-4 bg-slate-100 border-4 border-black font-bold outline-none uppercase">
                 <input type="text" id="post-company" placeholder="COMPANY NAME" class="w-full p-4 bg-slate-100 border-4 border-black font-bold outline-none uppercase">
                 <input type="text" id="post-location" placeholder="LOCATION (CITY, PROVINCE)" class="w-full p-4 bg-slate-100 border-4 border-black font-bold outline-none uppercase">
@@ -84,9 +85,8 @@
             <button onclick="closeLogin()" class="absolute top-4 right-4 font-black text-2xl">✕</button>
             <div id="login-step-1">
                 <h3 class="text-4xl font-black uppercase mb-2 tracking-tighter">Get Alerts</h3>
-                <p class="text-xs font-bold text-slate-500 mb-8 uppercase">Join the pipeline for instant notifications.</p>
                 <input type="email" id="login-email" placeholder="ENTER EMAIL" class="w-full p-5 bg-slate-100 mb-4 border-4 border-black outline-none font-bold uppercase">
-                <button onclick="sendCode()" class="w-full bg-black text-white py-5 font-black uppercase tracking-tighter hover:bg-yellow-500 hover:text-black">Send Code</button>
+                <button onclick="sendCode()" class="w-full bg-black text-white py-5 font-black uppercase tracking-tighter hover:bg-yellow-500">Send Code</button>
             </div>
             <div id="login-step-2" class="hidden text-center">
                 <h3 class="text-4xl font-black uppercase mb-6 tracking-tighter">Enter Code</h3>
@@ -125,9 +125,7 @@
                     <button class="footer-link">Your Privacy</button>
                 </div>
             </div>
-            <div class="pt-12 border-t border-white/10 text-center text-[10px] font-bold text-slate-500 uppercase">
-                HH HARDHATHUB INDUSTRIAL CANADA © 2026
-            </div>
+            <div class="pt-12 border-t border-white/10 text-center text-[10px] font-bold text-slate-500 uppercase">HH HARDHATHUB INDUSTRIAL CANADA © 2026</div>
         </div>
     </footer>
 
@@ -136,20 +134,16 @@
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ha3dic3FkY2xqeGNrZm1qeXZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg3NTI3NDcsImV4cCI6MjA4NDMyODc0N30.T_S_AeKeeM13cNPnggh26xj9jGNgCLocB5n84pjDqfI";
         const _supabase = supabase.createClient(SB_URL, SB_KEY);
 
-        // UI CONTROLS
         function openLogin() { document.getElementById('login-modal').classList.add('active'); }
         function closeLogin() { document.getElementById('login-modal').classList.remove('active'); }
         function openPostModal() { document.getElementById('post-modal').classList.add('active'); }
         function closePostModal() { document.getElementById('post-modal').classList.remove('active'); }
 
-        // AUTH LOGIC
         async function sendCode() {
             const email = document.getElementById('login-email').value;
             const { error } = await _supabase.auth.signInWithOtp({ email });
-            if (!error) {
-                document.getElementById('login-step-1').classList.add('hidden');
-                document.getElementById('login-step-2').classList.remove('hidden');
-            } else alert(error.message);
+            if (!error) { document.getElementById('login-step-1').classList.add('hidden'); document.getElementById('login-step-2').classList.remove('hidden'); }
+            else alert(error.message);
         }
 
         async function verifyCode() {
@@ -159,26 +153,23 @@
             if (!error) location.reload(); else alert("Error");
         }
 
-        const authBtn = document.getElementById('auth-btn');
-        authBtn.onclick = async () => {
-            const { data } = await _supabase.auth.getSession();
-            if (data.session) { await _supabase.auth.signOut(); location.reload(); }
-            else openLogin();
-        };
-
-        _supabase.auth.onAuthStateChange((event, session) => {
-            authBtn.innerText = session ? 'LOGOUT' : 'Login / Join';
-        });
-
-        // JOB BOARD LOGIC
+        // UPDATED SUBMIT FUNCTION
         async function submitJob() {
+            const employer_email = document.getElementById('post-employer-email').value;
             const title = document.getElementById('post-title').value;
             const company = document.getElementById('post-company').value;
             const location = document.getElementById('post-location').value;
             const description = document.getElementById('post-desc').value;
             const apply_link = document.getElementById('post-link').value;
-            const { error } = await _supabase.from('jobs').insert([{ title, company, location, description, apply_link }]);
-            if (error) alert(error.message); else { alert("Job Posted Successfully!"); closePostModal(); fetchJobs(); }
+
+            if (!employer_email) { alert("Please provide your email for the receipt."); return; }
+
+            const { error } = await _supabase.from('jobs').insert([{ 
+                title, company, location, description, apply_link, employer_email 
+            }]);
+
+            if (error) alert(error.message); 
+            else { alert("Job Posted Successfully! Confirmation email incoming."); closePostModal(); fetchJobs(); }
         }
 
         async function fetchJobs() {
@@ -189,36 +180,27 @@
                 data.forEach((job, index) => {
                     const companyName = (job.company || 'DIRECT').toUpperCase();
                     const jobTitle = (job.title || 'GENERAL LABOR').toUpperCase();
-                    
                     html += `
                     <div class="job-card p-6 flex flex-col h-full border-black border-t-8">
-                        <h3 class="text-2xl font-black uppercase tracking-tighter leading-tight mb-2">${jobTitle}</h3>
+                        <h3 class="text-2xl font-black uppercase tracking-tighter mb-2">${jobTitle}</h3>
                         <p class="text-[11px] font-black text-yellow-600 uppercase mb-4 tracking-widest">
                             ${companyName} &nbsp; <span class="text-slate-300">•</span> &nbsp; ${job.location || 'ONTARIO'}
                         </p>
                         <p class="text-xs font-bold text-slate-500 mb-6 uppercase line-clamp-3">${job.description || 'VERIFIED LISTING'}</p>
-                        <a href="${job.apply_link || job.link}" target="_blank" class="mt-auto w-full bg-black text-white py-3 font-black uppercase text-[10px] text-center hover:bg-yellow-500 hover:text-black transition-all">Apply Now ↗</a>
+                        <a href="${job.apply_link || job.link}" target="_blank" class="mt-auto w-full bg-black text-white py-3 font-black uppercase text-[10px] text-center hover:bg-yellow-500 transition-all">Apply Now ↗</a>
                     </div>`;
-
-                    // AMAZON ADS LOGIC
                     if ((index + 1) % 5 === 0) {
-                        html += `
-                        <div class="ad-card">
-                            <img src="https://m.media-amazon.com/images/I/81P2hMv98nL._AC_SX679_.jpg" class="ad-image">
-                            <h3 class="text-xl font-black uppercase mb-4">Industrial Safety Gear</h3>
-                            <a href="https://amzn.to/3YOkD67" target="_blank" class="w-full bg-yellow-500 text-black py-3 font-black uppercase text-[10px] border-2 border-black block">Shop Amazon ↗</a>
-                        </div>`;
+                        html += `<div class="ad-card"><img src="https://m.media-amazon.com/images/I/81P2hMv98nL._AC_SX679_.jpg" class="ad-image"><h3 class="text-xl font-black uppercase mb-4">Safety Boots</h3><a href="https://amzn.to/3YOkD67" target="_blank" class="w-full bg-yellow-500 text-black py-3 font-black uppercase text-[10px] border-2 border-black block">Amazon ↗</a></div>`;
                     }
                 });
                 grid.innerHTML = html;
             }
         }
 
-        // LEGAL VIEWS
         const legalData = {
-            terms: `<h2>Terms of Use</h2><p>HardHatHub is a logistics aggregator. We connect workers with third-party employers. We are not responsible for the hiring decisions of external companies.</p>`,
-            privacy: `<h2>Privacy Center</h2><p>We collect your email for the sole purpose of secure login and industrial job alerts. We do not sell user data to third parties.</p>`,
-            security: `<h2>Security Center</h2><p>Our platform uses Supabase's encrypted authentication layer. No passwords are stored on our servers.</p>`
+            terms: `<h2>Terms of Use</h2><p>HardHatHub is a logistics aggregator. We connect workers with third-party employers.</p>`,
+            privacy: `<h2>Privacy Center</h2><p>We collect your email for the sole purpose of secure login and industrial job alerts.</p>`,
+            security: `<h2>Security Center</h2><p>Our platform uses Supabase's encrypted authentication layer.</p>`
         };
 
         function openLegal(type) {
@@ -227,11 +209,16 @@
             document.getElementById('legal-body').innerHTML = legalData[type];
             window.scrollTo(0,0);
         }
-        function closeLegal() {
-            document.getElementById('feed-container').style.display = 'block';
-            document.getElementById('legal-section').classList.remove('active-legal');
-        }
+        function closeLegal() { document.getElementById('feed-container').style.display = 'block'; document.getElementById('legal-section').classList.remove('active-legal'); }
 
+        const authBtn = document.getElementById('auth-btn');
+        authBtn.onclick = async () => {
+            const { data } = await _supabase.auth.getSession();
+            if (data.session) { await _supabase.auth.signOut(); location.reload(); }
+            else openLogin();
+        };
+
+        _supabase.auth.onAuthStateChange((event, session) => { authBtn.innerText = session ? 'LOGOUT' : 'Login / Join'; });
         window.onload = fetchJobs;
     </script>
 </body>
