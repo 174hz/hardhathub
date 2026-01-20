@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>HardHatHub Redirect</title>
+    <script type="text/javascript">
+      // This script fixes the GitHub Pages 404 redirect for Supabase Auth
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 2).join('/') + '/index.html' + l.hash
+      );
+    </script>
+  </head>
+  <body>Redirecting to Pipeline...</body>
+</html>
